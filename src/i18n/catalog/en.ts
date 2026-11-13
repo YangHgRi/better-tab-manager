@@ -8,7 +8,7 @@ import type { Catalog } from '../types'
  * - Flat, dot-namespaced keys grouped by surface (nav.*, lists.*, settings.*).
  * - `{placeholder}` is interpolated; `{n}` also selects the plural form.
  * - A value that varies with a count is an object of plural forms (see status.*).
- * - Brand text ("Even Better OneTab") is intentionally left untranslated.
+ * - Brand text ("Better Tab Manager") is intentionally left untranslated.
  */
 export const en: Catalog = {
   // top bar
@@ -22,9 +22,9 @@ export const en: Catalog = {
   'lists.empty.title': 'No stored tabs yet',
   'lists.empty.lead': 'Collapse your open tabs into a tidy list. Three ways to store your first:',
   'lists.empty.toolbarLabel': 'Toolbar',
-  'lists.empty.toolbar': 'Click the Even Better OneTab icon, then a Store button.',
+  'lists.empty.toolbar': 'Click the Better Tab Manager icon, then a Store button.',
   'lists.empty.rightClickLabel': 'Right-click',
-  'lists.empty.rightClick': 'Right-click any page, then choose Even Better OneTab.',
+  'lists.empty.rightClick': 'Right-click any page, then choose Better Tab Manager.',
   'lists.empty.keyboardLabel': 'Keyboard',
   'lists.empty.keyboard': 'Assign a shortcut in Settings → Keyboard shortcuts.',
   'lists.noMatch': 'Nothing matches your filter.',
@@ -69,12 +69,25 @@ export const en: Catalog = {
   'card.toastOpenedRemoved': 'List opened & removed',
   'card.toastDeleted': 'List deleted',
   'card.toastCopiedMarkdown': 'Copied as Markdown',
+  'card.selectedCount': { one: '{n} selected', other: '{n} selected' },
+  'card.moveTo': 'Move to…',
+  'card.removeSelected': 'Remove',
+  'card.clearSelection': 'Clear',
+  'card.noOtherLists': 'No other lists',
+  'card.movedTabs': { one: 'Moved {n} tab', other: 'Moved {n} tabs' },
+  'card.removedTabs': { one: 'Removed {n} tab', other: 'Removed {n} tabs' },
 
   // tab row
   'tab.group': 'Tab group: {title}',
   'tab.unnamed': 'unnamed',
   'tab.wasPinned': 'Was pinned',
   'tab.remove': 'Remove from list',
+  'tab.edit': 'Edit link',
+  'tab.editTitlePlaceholder': 'Title',
+  'tab.editUrlPlaceholder': 'URL',
+  'tab.saveEdit': 'Save',
+  'files.blocked': { one: 'A local file couldn’t open — turn on “Allow access to file URLs” for Better Tab Manager.', other: '{n} local files couldn’t open — turn on “Allow access to file URLs” for Better Tab Manager.' },
+  'files.openSettings': 'Open settings',
 
   // history (recently deleted)
   'history.heading': 'Recently Deleted',
@@ -107,7 +120,7 @@ export const en: Catalog = {
   'popup.recentLists': 'Recent lists',
   'popup.restoreList': 'Restore this list',
   'popup.empty': 'No stored tabs yet',
-  'popup.openApp': 'Open Even Better OneTab',
+  'popup.openApp': 'Open Better Tab Manager',
   'popup.tabCount': { one: '{n} tab', other: '{n} tabs' },
 
   // background feature
@@ -164,9 +177,6 @@ export const en: Catalog = {
   'settings.appearance.density.label': 'List layout',
   'settings.appearance.density.compact': 'Compact',
   'settings.appearance.density.comfortable': 'Comfortable',
-  'settings.appearance.pinnedPosition.label': 'Pinned lists',
-  'settings.appearance.pinnedPosition.top': 'At the top',
-  'settings.appearance.pinnedPosition.bottom': 'At the bottom',
   'settings.appearance.tabDisplay.label': 'Tab display',
   'settings.appearance.tabDisplay.titleAndUrl': 'Title and domain',
   'settings.appearance.tabDisplay.title': 'Title only',
@@ -188,7 +198,7 @@ export const en: Catalog = {
   'settings.storing.ignorePinned.label': 'Skip pinned tabs',
   'settings.storing.ignorePinned.desc': 'Pinned browser tabs are left open when storing.',
   'settings.storing.excludeIllegalURL.label': 'Skip browser-internal pages',
-  'settings.storing.excludeIllegalURL.desc': 'about:, chrome:, file: and similar URLs are not stored.',
+  'settings.storing.excludeIllegalURL.desc': 'about:, chrome: and similar URLs are not stored.',
   'settings.storing.removeDuplicate.label': 'Remove duplicate tabs within a list',
   'settings.storing.pinGroupList.label': 'Pin lists made from tab groups',
   'settings.storing.pinGroupList.desc': 'Pinned lists aren’t removed when opened.',
@@ -225,18 +235,29 @@ export const en: Catalog = {
   'settings.toolbar.browserAction.showList': 'Opens the list page',
   'settings.toolbar.pageContext.label': 'Show in page right-click menu',
   'settings.toolbar.pageContext.desc':
-    'Adds an “Even Better OneTab” submenu when right-clicking a webpage. Off, the actions only appear when right-clicking the toolbar icon.',
-  'settings.toolbar.allContext.label': 'Show on links, images and selections too',
-  'settings.toolbar.allContext.desc':
-    'Include the menu when right-clicking a link, image, video, or selected text — not just empty page area.',
+    'Adds a “Better Tab Manager” submenu when right-clicking a webpage (and on links, images, and selections). Off, the actions only appear when right-clicking the toolbar icon.',
 
   'settings.footer.madeWith': 'Made with ❤️ in NYC',
   'settings.footer.coffee': '☕ Buy me a coffee',
-  'settings.footer.version': 'Even Better OneTab v{version}',
+  'settings.footer.version': 'Better Tab Manager v{version}',
   'settings.footer.privacy': 'Privacy',
 
   // sync & mobile
   'sync.heading': 'Sync & mobile',
+  'sync.device.label': 'Sync across your devices',
+  'sync.device.desc':
+    "Keep your lists in step on every computer where this browser is signed in — no account or token, it rides your browser's built-in sync.",
+  'sync.device.privacy':
+    'Your tabs travel through your browser’s own sync. In Chrome, add a sync passphrase to keep them end-to-end encrypted. Turn this off to keep them on this device only.',
+  'sync.device.enabledToast': 'Device sync on',
+  'sync.device.disabledToast': 'Device sync off',
+  'sync.mirror.label': 'Mirror to bookmarks',
+  'sync.mirror.desc':
+    'Copies your lists into a “Better Tab Manager” bookmarks folder so you can open them on your phone. One-way — your bookmarks are never read back.',
+  'sync.mirror.enabledToast': 'Mirroring lists to bookmarks',
+  'sync.mirror.disabledToast': 'Bookmark mirror off',
+  'sync.mirror.denied': 'Bookmark access is needed to mirror your lists',
+  'sync.gist.disclosure': 'Advanced: sync with a GitHub gist',
   'sync.introBefore': 'Sync your lists to a ',
   'sync.introGist': 'private GitHub Gist',
   'sync.introAfter':
@@ -293,5 +314,5 @@ export const en: Catalog = {
     other: 'Replace all current lists with the {n} imported lists?',
   },
   'backup.importedToast': { one: 'Imported {n} list', other: 'Imported {n} lists' },
-  'backup.couldNotRead': 'Could not read that file — is it an Even Better OneTab backup?',
+  'backup.couldNotRead': 'Could not read that file — is it an Better Tab Manager backup?',
 }

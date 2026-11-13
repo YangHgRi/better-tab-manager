@@ -6,6 +6,8 @@
   import { timeAgo } from '../ui/time'
   import { toast } from '../ui/toast.svelte'
   import { act } from './actions'
+  import { canOpenFileUrls, isFileUrl } from '../core/file-urls'
+  import { showFileAccessToast } from './file-access'
 
   type FeedEntry = { kind: 'list'; entry: TrashEntry } | { kind: 'tab'; entry: TrashTabEntry }
 
@@ -42,7 +44,10 @@
     }
   }
 
-  const openTab = (url: string) => chrome.tabs.create({ url, active: app.opts.focusOpenedTab })
+  const openTab = async (url: string) => {
+    if (isFileUrl(url) && !(await canOpenFileUrls())) return showFileAccessToast(1)
+    chrome.tabs.create({ url, active: app.opts.focusOpenedTab }).catch(e => toast(e instanceof Error ? e.message : String(e), 'error'))
+  }
 
   const recover = async (id: string) => {
     const { ok } = await act({ type: 'trash-restore', id })

@@ -1,5 +1,5 @@
 import { DEFAULT_OPTIONS, type Options } from '../core/options'
-import { STORAGE_KEYS, getLists, getOptions, getSyncConfig, getSyncState, getTabTrash, getTrash } from '../core/storage'
+import { STORAGE_KEYS, SYNC_CONFIG_DEFAULTS, getLists, getOptions, getSyncConfig, getSyncState, getTabTrash, getTrash } from '../core/storage'
 import type { SyncConfig, SyncState, TabList, TrashEntry, TrashTabEntry } from '../core/types'
 
 export const app = $state({
@@ -7,7 +7,7 @@ export const app = $state({
   trash: [] as TrashEntry[],
   tabTrash: [] as TrashTabEntry[],
   opts: { ...DEFAULT_OPTIONS } as Options,
-  syncConfig: { enabled: false, gistToken: '', gistId: '' } as SyncConfig,
+  syncConfig: { ...SYNC_CONFIG_DEFAULTS } as SyncConfig,
   syncState: { lastPushAt: null, lastPullAt: null, error: null } as SyncState,
   loaded: false,
 })
@@ -31,7 +31,7 @@ export const initState = async () => {
     if (changes[STORAGE_KEYS.TAB_TRASH_KEY]) app.tabTrash = changes[STORAGE_KEYS.TAB_TRASH_KEY].newValue ?? []
     if (changes[STORAGE_KEYS.OPTS_KEY]) app.opts = { ...DEFAULT_OPTIONS, ...(changes[STORAGE_KEYS.OPTS_KEY].newValue ?? {}) }
     if (changes[STORAGE_KEYS.SYNC_CONFIG_KEY]) {
-      app.syncConfig = { enabled: false, gistToken: '', gistId: '', ...(changes[STORAGE_KEYS.SYNC_CONFIG_KEY].newValue ?? {}) }
+      app.syncConfig = { ...SYNC_CONFIG_DEFAULTS, ...(changes[STORAGE_KEYS.SYNC_CONFIG_KEY].newValue ?? {}) }
     }
     if (changes[STORAGE_KEYS.SYNC_STATE_KEY]) {
       app.syncState = { lastPushAt: null, lastPullAt: null, error: null, ...(changes[STORAGE_KEYS.SYNC_STATE_KEY].newValue ?? {}) }

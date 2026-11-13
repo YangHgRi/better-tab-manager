@@ -1,11 +1,11 @@
-# Translation context — Even Better OneTab
+# Translation context — Better Tab Manager
 
-Even Better OneTab is a browser extension (Chrome/Brave) that saves your open tabs into named lists and restores them later — a cleaner OneTab alternative. Use this guide to translate `catalog/en.ts` accurately: it tells you **what each string is, where it appears, and how it's used**, so you can pick the right word, gender, verb form, and length.
+Better Tab Manager is a browser extension (Chrome/Brave) that saves your open tabs into named lists and restores them later — a cleaner, faster tab manager. Use this guide to translate `catalog/en.ts` accurately: it tells you **what each string is, where it appears, and how it's used**, so you can pick the right word, gender, verb form, and length.
 
 ## Global rules
 
 - **Register/tone:** friendly, concise consumer-software tone. Match the conventions your language's own Chrome/OS UI uses (e.g. how Chrome localizes "Settings", "Tab", "Window", "Sync", "Pinned", "Undo", "Import/Export"). When in doubt, prefer the term the browser itself uses in your language.
-- **Never translate the brand** "Even Better OneTab" — keep it verbatim.
+- **Never translate the brand** "Better Tab Manager" — keep it verbatim.
 - **Keep every `{placeholder}` exactly** (same name, same braces). You may reorder them within a sentence as grammar requires. `{n}` is a number, `{time}`/`{when}`/`{ago}` are relative-time strings, `{title}`/`{list}`/`{url}`/`{label}`/`{face}`/`{version}` are values inserted at runtime.
 - **Keep literal/technical tokens untranslated:** `about:` `chrome:` `file:` `ghp_…` `github_pat_…` `gist.github.com` `GitHub` `Gist` `JSON` `Markdown` `URL`, keyboard keys `⌘` `Ctrl`, and the symbols `×` `❤️` `☕` `→`. "NYC" stays "NYC".
 - **Preserve leading/trailing spaces** in the `sync.introBefore/After`, `sync.step1Before/After`, `sync.autoDesc*`, `sync.mobileDesc*` values — those sentences are assembled around inline links, and the spaces glue the pieces. Copy them exactly.
@@ -53,11 +53,11 @@ Each plural value still contains `{n}`.
 **shortcuts.\*** — the Keyboard shortcuts section. `title` header. `intro` description. `notSet` "{n} shortcuts not set" (plural). `set` button "Set shortcuts…" (opens the browser's shortcut page — keep the ellipsis). `shortcuts.cmd.*` are the five command names; match your browser's wording for "Store"/"tabs"/"window"/"list".
 
 **settings.\*** — the Settings page. `title` page title. Each `*.heading` is a section header. Each row has a `.label` and often a `.desc` (one-sentence explanation) plus `<select>` `.option` values:
-- `appearance.theme` (System/Light/Dark — "System" = follow OS). `density` (list spacing: Compact/Comfortable). `pinnedPosition` (where pinned lists sit). `tabDisplay` (Title and domain / Title only / URL only). `hideFavicon`. `listActions`/`tabRemove` (when action buttons / the tab "×" appear) share the options `showOnHover`/`alwaysShow`.
-- `storing.*`: `openListPage` (when saving opens the list page), and toggles `ignorePinned`, `excludeIllegalURL` (skip about:/chrome:/file: pages), `removeDuplicate`, `pinGroupList` (auto-pin lists made from tab groups).
+- `appearance.theme` (System/Light/Dark — "System" = follow OS). `density` (list spacing: Compact/Comfortable). `tabDisplay` (Title and domain / Title only / URL only). `hideFavicon`. `listActions`/`tabRemove` (when action buttons / the tab "×" appear) share the options `showOnHover`/`alwaysShow`.
+- `storing.*`: `openListPage` (when saving opens the list page), and toggles `ignorePinned`, `excludeIllegalURL` (skip about:/chrome: pages; file: pages are kept), `removeDuplicate`, `pinGroupList` (auto-pin lists made from tab groups).
 - `opening.*`: `itemClick` (what clicking one saved tab does), `openList` (what opening a whole list does), `focusOpenedTab` (switch to the opened tab or leave it in the background), `restorePosition` (where restored tabs open), `trashRetention` (how long deleted lists are kept — options Removed immediately / Kept for 1 day / 1 week / 1 month).
 - `toolbar.*`: `browserAction` (what clicking the toolbar icon does), `pageContext`/`allContext` (right-click menu options).
-- `footer.madeWith` "Made with ❤️ in NYC" (keep ❤️, NYC). `footer.coffee` "☕ Buy me a coffee" (a donation button). `footer.version` = "Even Better OneTab v{version}" (keep brand + {version}). `footer.privacy` a link to the privacy policy.
+- `footer.madeWith` "Made with ❤️ in NYC" (keep ❤️, NYC). `footer.coffee` "☕ Buy me a coffee" (a donation button). `footer.version` = "Better Tab Manager v{version}" (keep brand + {version}). `footer.privacy` a link to the privacy policy.
 
 **sync.\*** — the "Sync & mobile" section. Optional sync stores your lists in your own private GitHub Gist and lets a phone read them. The `*Before/*Link/*After` triples are ONE sentence each, split around a clickable link — translate them so that, concatenated in order, they read naturally, and keep the boundary spaces. `connect`/`syncNow`/`mergeFromGist`/`disconnect` are buttons. `*Toast` are confirmations; `mergedToast` plural. `disconnectConfirm` is a confirmation dialog. `copiedToast` = "{label} copied" where {label} is `tokenName` ("Token") or `gistIdName` ("Gist id"). `lastSynced` = "Last synced {ago} ({time})".
 
@@ -66,5 +66,5 @@ Each plural value still contains `{n}`.
 ## Manifest strings (`_locales/<lang>/messages.json`)
 
 Also translate six store/manifest strings:
-- `appDesc` — the extension's store description (one punchy sentence; keep "OneTab" as it's a category reference, keep the brand tone). English: "Store and restore your tabs in one click — a fast, private OneTab alternative with sync and a mobile viewer."
+- `appDesc` — the extension's store description (one punchy sentence; keep the brand tone). English: "Store and restore your tabs in one click — a fast, private tab manager with sync and a mobile viewer."
 - `cmdStoreSelected` "Store selected tabs", `cmdStoreAll` "Store all tabs in this window", `cmdStoreAllWindows` "Store all tabs in all windows", `cmdRestoreLatest` "Restore the most recent list", `cmdOpenLists` "Open the tab list page" — these are keyboard-command descriptions; match `shortcuts.cmd.*`.

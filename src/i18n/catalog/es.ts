@@ -12,9 +12,9 @@ export const es: Catalog = {
   'lists.empty.title': 'Aún no hay pestañas guardadas',
   'lists.empty.lead': 'Contrae tus pestañas abiertas en una lista ordenada. Tres formas de guardar la primera:',
   'lists.empty.toolbarLabel': 'Barra de herramientas',
-  'lists.empty.toolbar': 'Haz clic en el icono de Even Better OneTab y luego en un botón Guardar.',
+  'lists.empty.toolbar': 'Haz clic en el icono de Better Tab Manager y luego en un botón Guardar.',
   'lists.empty.rightClickLabel': 'Clic derecho',
-  'lists.empty.rightClick': 'Haz clic derecho en cualquier página y elige Even Better OneTab.',
+  'lists.empty.rightClick': 'Haz clic derecho en cualquier página y elige Better Tab Manager.',
   'lists.empty.keyboardLabel': 'Teclado',
   'lists.empty.keyboard': 'Asigna un atajo en Ajustes → Atajos de teclado.',
   'lists.noMatch': 'Nada coincide con tu filtro.',
@@ -59,12 +59,25 @@ export const es: Catalog = {
   'card.toastOpenedRemoved': 'Lista abierta y quitada',
   'card.toastDeleted': 'Lista eliminada',
   'card.toastCopiedMarkdown': 'Copiada como Markdown',
+  'card.selectedCount': { one: '{n} seleccionada', other: '{n} seleccionadas' },
+  'card.moveTo': 'Mover a…',
+  'card.removeSelected': 'Quitar',
+  'card.clearSelection': 'Borrar',
+  'card.noOtherLists': 'No hay otras listas',
+  'card.movedTabs': { one: '{n} pestaña movida', other: '{n} pestañas movidas' },
+  'card.removedTabs': { one: '{n} pestaña eliminada', other: '{n} pestañas eliminadas' },
 
   // tab row
   'tab.group': 'Grupo de pestañas: {title}',
   'tab.unnamed': 'sin nombre',
   'tab.wasPinned': 'Estaba fijada',
   'tab.remove': 'Quitar de la lista',
+  'tab.edit': 'Editar enlace',
+  'tab.editTitlePlaceholder': 'Título',
+  'tab.editUrlPlaceholder': 'URL',
+  'tab.saveEdit': 'Guardar',
+  'files.blocked': { one: 'No se pudo abrir un archivo local: activa «Permitir acceso a las URL de archivo» para Better Tab Manager.', other: 'No se pudieron abrir {n} archivos locales: activa «Permitir acceso a las URL de archivo» para Better Tab Manager.' },
+  'files.openSettings': 'Abrir ajustes',
 
   // history (recently deleted)
   'history.heading': 'Eliminados recientemente',
@@ -97,7 +110,7 @@ export const es: Catalog = {
   'popup.recentLists': 'Listas recientes',
   'popup.restoreList': 'Restaurar esta lista',
   'popup.empty': 'Aún no hay pestañas guardadas',
-  'popup.openApp': 'Abrir Even Better OneTab',
+  'popup.openApp': 'Abrir Better Tab Manager',
   'popup.tabCount': { one: '{n} pestaña', other: '{n} pestañas' },
 
   // background feature
@@ -154,9 +167,6 @@ export const es: Catalog = {
   'settings.appearance.density.label': 'Diseño de la lista',
   'settings.appearance.density.compact': 'Compacto',
   'settings.appearance.density.comfortable': 'Cómodo',
-  'settings.appearance.pinnedPosition.label': 'Listas fijadas',
-  'settings.appearance.pinnedPosition.top': 'Arriba',
-  'settings.appearance.pinnedPosition.bottom': 'Abajo',
   'settings.appearance.tabDisplay.label': 'Visualización de pestañas',
   'settings.appearance.tabDisplay.titleAndUrl': 'Título y dominio',
   'settings.appearance.tabDisplay.title': 'Solo título',
@@ -178,7 +188,7 @@ export const es: Catalog = {
   'settings.storing.ignorePinned.label': 'Omitir pestañas fijadas',
   'settings.storing.ignorePinned.desc': 'Las pestañas fijadas del navegador se dejan abiertas al guardar.',
   'settings.storing.excludeIllegalURL.label': 'Omitir páginas internas del navegador',
-  'settings.storing.excludeIllegalURL.desc': 'Las URL about:, chrome:, file: y similares no se guardan.',
+  'settings.storing.excludeIllegalURL.desc': 'Las URL about:, chrome: y similares no se guardan.',
   'settings.storing.removeDuplicate.label': 'Quitar pestañas duplicadas dentro de una lista',
   'settings.storing.pinGroupList.label': 'Fijar listas creadas a partir de grupos de pestañas',
   'settings.storing.pinGroupList.desc': 'Las listas fijadas no se quitan al abrirse.',
@@ -215,18 +225,29 @@ export const es: Catalog = {
   'settings.toolbar.browserAction.showList': 'Abre la página de listas',
   'settings.toolbar.pageContext.label': 'Mostrar en el menú del clic derecho de la página',
   'settings.toolbar.pageContext.desc':
-    'Añade un submenú “Even Better OneTab” al hacer clic derecho en una página web. Desactivado, las acciones solo aparecen al hacer clic derecho en el icono de la barra de herramientas.',
-  'settings.toolbar.allContext.label': 'Mostrar también en enlaces, imágenes y selecciones',
-  'settings.toolbar.allContext.desc':
-    'Incluye el menú al hacer clic derecho en un enlace, imagen, vídeo o texto seleccionado — no solo en un área vacía de la página.',
+    'Añade un submenú “Better Tab Manager” al hacer clic derecho en una página web. Desactivado, las acciones solo aparecen al hacer clic derecho en el icono de la barra de herramientas.',
 
   'settings.footer.madeWith': 'Hecho con ❤️ en NYC',
   'settings.footer.coffee': '☕ Invítame a un café',
-  'settings.footer.version': 'Even Better OneTab v{version}',
+  'settings.footer.version': 'Better Tab Manager v{version}',
   'settings.footer.privacy': 'Privacidad',
 
   // sync & mobile
   'sync.heading': 'Sincronización y móvil',
+  'sync.device.label': 'Sincroniza entre tus dispositivos',
+  'sync.device.desc':
+    'Mantén tus listas al día en cada equipo donde tengas la sesión de este navegador — sin cuenta ni token, usa la sincronización propia del navegador.',
+  'sync.device.privacy':
+    'Tus pestañas viajan por la sincronización de tu navegador. En Chrome, añade una frase de contraseña de sincronización para cifrarlas de extremo a extremo. Desactívala para mantenerlas solo en este dispositivo.',
+  'sync.device.enabledToast': 'Sincronización de dispositivos activada',
+  'sync.device.disabledToast': 'Sincronización de dispositivos desactivada',
+  'sync.mirror.label': 'Reflejar en marcadores',
+  'sync.mirror.desc':
+    'Copia tus listas en una carpeta de marcadores «Better Tab Manager» para abrirlas en el móvil. Unidireccional: nunca se leen tus marcadores.',
+  'sync.mirror.enabledToast': 'Reflejando listas en marcadores',
+  'sync.mirror.disabledToast': 'Reflejo en marcadores desactivado',
+  'sync.mirror.denied': 'Se necesita acceso a los marcadores para reflejar tus listas',
+  'sync.gist.disclosure': 'Avanzado: sincronizar con un gist de GitHub',
   'sync.introBefore': 'Sincroniza tus listas en un ',
   'sync.introGist': 'Gist privado de GitHub',
   'sync.introAfter':
@@ -283,5 +304,5 @@ export const es: Catalog = {
     other: '¿Reemplazar todas las listas actuales con las {n} listas importadas?',
   },
   'backup.importedToast': { one: 'Importada {n} lista', other: 'Importadas {n} listas' },
-  'backup.couldNotRead': 'No se pudo leer ese archivo — ¿es una copia de seguridad de Even Better OneTab?',
+  'backup.couldNotRead': 'No se pudo leer ese archivo — ¿es una copia de seguridad de Better Tab Manager?',
 }

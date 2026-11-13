@@ -12,9 +12,9 @@ export const zhCN: Catalog = {
   'lists.empty.title': '还没有存储的标签页',
   'lists.empty.lead': '把打开的标签页收拢成一个整洁的列表。存储第一个列表有三种方式：',
   'lists.empty.toolbarLabel': '工具栏',
-  'lists.empty.toolbar': '点击 Even Better OneTab 图标，然后点击存储按钮。',
+  'lists.empty.toolbar': '点击 Better Tab Manager 图标，然后点击存储按钮。',
   'lists.empty.rightClickLabel': '右键',
-  'lists.empty.rightClick': '在任意页面右键，然后选择 Even Better OneTab。',
+  'lists.empty.rightClick': '在任意页面右键，然后选择 Better Tab Manager。',
   'lists.empty.keyboardLabel': '键盘',
   'lists.empty.keyboard': '在“设置 → 键盘快捷键”中设置快捷键。',
   'lists.noMatch': '没有符合筛选条件的内容。',
@@ -59,12 +59,25 @@ export const zhCN: Catalog = {
   'card.toastOpenedRemoved': '列表已打开并移除',
   'card.toastDeleted': '列表已删除',
   'card.toastCopiedMarkdown': '已复制为 Markdown',
+  'card.selectedCount': { other: '已选 {n} 个' },
+  'card.moveTo': '移动到…',
+  'card.removeSelected': '移除',
+  'card.clearSelection': '清除',
+  'card.noOtherLists': '没有其他列表',
+  'card.movedTabs': { other: '已移动 {n} 个标签页' },
+  'card.removedTabs': { other: '已移除 {n} 个标签页' },
 
   // tab row
   'tab.group': '标签页群组：{title}',
   'tab.unnamed': '未命名',
   'tab.wasPinned': '曾固定',
   'tab.remove': '从列表中移除',
+  'tab.edit': '编辑链接',
+  'tab.editTitlePlaceholder': '标题',
+  'tab.editUrlPlaceholder': '网址',
+  'tab.saveEdit': '保存',
+  'files.blocked': { other: '有 {n} 个本地文件无法打开——请为 Better Tab Manager 开启“允许访问文件网址”。' },
+  'files.openSettings': '打开设置',
 
   // history (recently deleted)
   'history.heading': '最近删除',
@@ -97,7 +110,7 @@ export const zhCN: Catalog = {
   'popup.recentLists': '最近的列表',
   'popup.restoreList': '恢复此列表',
   'popup.empty': '还没有存储的标签页',
-  'popup.openApp': '打开 Even Better OneTab',
+  'popup.openApp': '打开 Better Tab Manager',
   'popup.tabCount': { other: '{n} 个标签页' },
 
   // background feature
@@ -154,9 +167,6 @@ export const zhCN: Catalog = {
   'settings.appearance.density.label': '列表布局',
   'settings.appearance.density.compact': '紧凑',
   'settings.appearance.density.comfortable': '宽松',
-  'settings.appearance.pinnedPosition.label': '固定的列表',
-  'settings.appearance.pinnedPosition.top': '在顶部',
-  'settings.appearance.pinnedPosition.bottom': '在底部',
   'settings.appearance.tabDisplay.label': '标签页显示',
   'settings.appearance.tabDisplay.titleAndUrl': '标题和域名',
   'settings.appearance.tabDisplay.title': '仅标题',
@@ -178,7 +188,7 @@ export const zhCN: Catalog = {
   'settings.storing.ignorePinned.label': '跳过已固定的标签页',
   'settings.storing.ignorePinned.desc': '存储时保留浏览器中已固定的标签页处于打开状态。',
   'settings.storing.excludeIllegalURL.label': '跳过浏览器内部页面',
-  'settings.storing.excludeIllegalURL.desc': 'about:、chrome:、file: 及类似的 URL 不会被存储。',
+  'settings.storing.excludeIllegalURL.desc': 'about:、chrome: 及类似的 URL 不会被存储。',
   'settings.storing.removeDuplicate.label': '移除列表内重复的标签页',
   'settings.storing.pinGroupList.label': '固定由标签页群组创建的列表',
   'settings.storing.pinGroupList.desc': '已固定的列表在打开时不会被移除。',
@@ -215,18 +225,27 @@ export const zhCN: Catalog = {
   'settings.toolbar.browserAction.showList': '打开列表页面',
   'settings.toolbar.pageContext.label': '在页面右键菜单中显示',
   'settings.toolbar.pageContext.desc':
-    '在网页上右键时添加一个“Even Better OneTab”子菜单。关闭时，这些操作仅在右键点击工具栏图标时出现。',
-  'settings.toolbar.allContext.label': '也在链接、图片和选中内容上显示',
-  'settings.toolbar.allContext.desc':
-    '在右键点击链接、图片、视频或选中的文本时也包含该菜单——不仅限于空白页面区域。',
+    '在网页上右键时添加一个“Better Tab Manager”子菜单。关闭时，这些操作仅在右键点击工具栏图标时出现。',
 
   'settings.footer.madeWith': '用 ❤️ 在 NYC 制作',
   'settings.footer.coffee': '☕ 请我喝杯咖啡',
-  'settings.footer.version': 'Even Better OneTab v{version}',
+  'settings.footer.version': 'Better Tab Manager v{version}',
   'settings.footer.privacy': '隐私',
 
   // sync & mobile
   'sync.heading': '同步与移动端',
+  'sync.device.label': '在你的设备间同步',
+  'sync.device.desc': '在登录了此浏览器的每台电脑上保持列表一致——无需账号或令牌，使用浏览器自带的同步。',
+  'sync.device.privacy':
+    '你的标签页通过浏览器自身的同步传输。在 Chrome 中设置同步密码即可实现端到端加密。关闭后仅保存在此设备上。',
+  'sync.device.enabledToast': '已开启设备同步',
+  'sync.device.disabledToast': '已关闭设备同步',
+  'sync.mirror.label': '镜像到书签',
+  'sync.mirror.desc': '将你的列表复制到名为“Better Tab Manager”的书签文件夹，便于在手机上打开。单向——绝不会读取你的书签。',
+  'sync.mirror.enabledToast': '正在将列表镜像到书签',
+  'sync.mirror.disabledToast': '已关闭书签镜像',
+  'sync.mirror.denied': '需要书签访问权限才能镜像列表',
+  'sync.gist.disclosure': '高级：使用 GitHub gist 同步',
   'sync.introBefore': '将你的列表同步到一个 ',
   'sync.introGist': '私有 GitHub Gist',
   'sync.introAfter':
@@ -282,5 +301,5 @@ export const zhCN: Catalog = {
     other: '要用导入的 {n} 个列表替换当前所有列表吗？',
   },
   'backup.importedToast': { other: '已导入 {n} 个列表' },
-  'backup.couldNotRead': '无法读取该文件——它是 Even Better OneTab 的备份吗？',
+  'backup.couldNotRead': '无法读取该文件——它是 Better Tab Manager 的备份吗？',
 }

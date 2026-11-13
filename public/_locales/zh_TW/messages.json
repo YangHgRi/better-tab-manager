@@ -1,5 +1,5 @@
 {
-  "appDesc": { "message": "一鍵儲存與還原分頁——快速、私密的 OneTab 替代方案，支援同步與行動檢視器。" },
+  "appDesc": { "message": "一鍵儲存與還原分頁——快速、私密的分頁管理器，支援同步與行動檢視器。" },
   "cmdStoreSelected": { "message": "儲存選取的分頁" },
   "cmdStoreAll": { "message": "儲存此視窗的所有分頁" },
   "cmdStoreAllWindows": { "message": "儲存所有視窗的所有分頁" },

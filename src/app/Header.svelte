@@ -44,7 +44,9 @@
 
 <header>
   <div class="bar">
-    <img class="wordmark" src="/icons/wordmark-transparent.png" alt="Even Better OneTab" />
+    <span class="wordmark">
+      <img class="wordmark-img" src="/icons/wordmark-transparent.png" alt="Better Tab Manager" />
+    </span>
 
     {#if route === 'lists' && tagCounts.length > 0}
       <div class="tags">
@@ -116,12 +118,17 @@
   }
 
   .wordmark {
-    width: 118px;
-    height: auto;
+    display: inline-flex;
     flex-shrink: 0;
   }
 
-  :global([data-theme='dark']) .wordmark {
+  .wordmark-img {
+    width: 118px;
+    height: auto;
+    display: block;
+  }
+
+  :global([data-theme='dark']) .wordmark-img {
     /* dark text → light; hue-rotate restores the blues */
     filter: invert(1) hue-rotate(180deg);
   }

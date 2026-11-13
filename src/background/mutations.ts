@@ -13,7 +13,7 @@ import {
   setTrash,
 } from '../core/storage'
 import type { TabItem, TabList, TrashEntry, TrashTabEntry } from '../core/types'
-import { schedulePush } from './sync'
+import { scheduleSync } from './sync'
 
 // All list writes are funneled through this queue so concurrent messages from
 // the popup, app page, and tab events can't clobber each other's read-modify-write.
@@ -49,7 +49,7 @@ export const mutateLists = (fn: (lists: TabList[]) => TabList[] | void, sync = t
     } else {
       await setLists(result)
     }
-    if (sync) schedulePush()
+    if (sync) scheduleSync()
   })
 
 export const addList = async (partial: Partial<TabList>, index?: number) => {

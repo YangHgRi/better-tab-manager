@@ -12,9 +12,9 @@ export const fr: Catalog = {
   'lists.empty.title': 'Aucun onglet enregistré',
   'lists.empty.lead': 'Regroupez vos onglets ouverts dans une liste bien rangée. Trois façons d’enregistrer les premiers :',
   'lists.empty.toolbarLabel': 'Barre d’outils',
-  'lists.empty.toolbar': 'Cliquez sur l’icône Even Better OneTab, puis sur un bouton Enregistrer.',
+  'lists.empty.toolbar': 'Cliquez sur l’icône Better Tab Manager, puis sur un bouton Enregistrer.',
   'lists.empty.rightClickLabel': 'Clic droit',
-  'lists.empty.rightClick': 'Faites un clic droit sur une page, puis choisissez Even Better OneTab.',
+  'lists.empty.rightClick': 'Faites un clic droit sur une page, puis choisissez Better Tab Manager.',
   'lists.empty.keyboardLabel': 'Clavier',
   'lists.empty.keyboard': 'Attribuez un raccourci dans Paramètres → Raccourcis clavier.',
   'lists.noMatch': 'Aucun résultat pour votre filtre.',
@@ -59,12 +59,25 @@ export const fr: Catalog = {
   'card.toastOpenedRemoved': 'Liste ouverte et supprimée',
   'card.toastDeleted': 'Liste supprimée',
   'card.toastCopiedMarkdown': 'Copié en Markdown',
+  'card.selectedCount': { one: '{n} sélectionné', other: '{n} sélectionnés' },
+  'card.moveTo': 'Déplacer vers…',
+  'card.removeSelected': 'Retirer',
+  'card.clearSelection': 'Effacer',
+  'card.noOtherLists': 'Aucune autre liste',
+  'card.movedTabs': { one: '{n} onglet déplacé', other: '{n} onglets déplacés' },
+  'card.removedTabs': { one: '{n} onglet supprimé', other: '{n} onglets supprimés' },
 
   // tab row
   'tab.group': 'Groupe d’onglets : {title}',
   'tab.unnamed': 'sans nom',
   'tab.wasPinned': 'Était épinglé',
   'tab.remove': 'Retirer de la liste',
+  'tab.edit': 'Modifier le lien',
+  'tab.editTitlePlaceholder': 'Titre',
+  'tab.editUrlPlaceholder': 'URL',
+  'tab.saveEdit': 'Enregistrer',
+  'files.blocked': { one: 'Un fichier local n’a pas pu s’ouvrir — activez « Autoriser l’accès aux URL de fichier » pour Better Tab Manager.', other: '{n} fichiers locaux n’ont pas pu s’ouvrir — activez « Autoriser l’accès aux URL de fichier » pour Better Tab Manager.' },
+  'files.openSettings': 'Ouvrir les paramètres',
 
   // history (recently deleted)
   'history.heading': 'Récemment supprimés',
@@ -97,7 +110,7 @@ export const fr: Catalog = {
   'popup.recentLists': 'Listes récentes',
   'popup.restoreList': 'Restaurer cette liste',
   'popup.empty': 'Aucun onglet enregistré',
-  'popup.openApp': 'Ouvrir Even Better OneTab',
+  'popup.openApp': 'Ouvrir Better Tab Manager',
   'popup.tabCount': { one: '{n} onglet', other: '{n} onglets' },
 
   // background feature
@@ -154,9 +167,6 @@ export const fr: Catalog = {
   'settings.appearance.density.label': 'Disposition des listes',
   'settings.appearance.density.compact': 'Compacte',
   'settings.appearance.density.comfortable': 'Confortable',
-  'settings.appearance.pinnedPosition.label': 'Listes épinglées',
-  'settings.appearance.pinnedPosition.top': 'En haut',
-  'settings.appearance.pinnedPosition.bottom': 'En bas',
   'settings.appearance.tabDisplay.label': 'Affichage des onglets',
   'settings.appearance.tabDisplay.titleAndUrl': 'Titre et domaine',
   'settings.appearance.tabDisplay.title': 'Titre seul',
@@ -178,7 +188,7 @@ export const fr: Catalog = {
   'settings.storing.ignorePinned.label': 'Ignorer les onglets épinglés',
   'settings.storing.ignorePinned.desc': 'Les onglets épinglés du navigateur restent ouverts lors de l’enregistrement.',
   'settings.storing.excludeIllegalURL.label': 'Ignorer les pages internes du navigateur',
-  'settings.storing.excludeIllegalURL.desc': 'Les URL comme about:, chrome:, file: et similaires ne sont pas enregistrées.',
+  'settings.storing.excludeIllegalURL.desc': 'Les URL comme about:, chrome: et similaires ne sont pas enregistrées.',
   'settings.storing.removeDuplicate.label': 'Supprimer les onglets en double dans une liste',
   'settings.storing.pinGroupList.label': 'Épingler les listes créées à partir de groupes d’onglets',
   'settings.storing.pinGroupList.desc': 'Les listes épinglées ne sont pas supprimées à l’ouverture.',
@@ -215,18 +225,29 @@ export const fr: Catalog = {
   'settings.toolbar.browserAction.showList': 'Ouvre la page des listes',
   'settings.toolbar.pageContext.label': 'Afficher dans le menu contextuel de la page',
   'settings.toolbar.pageContext.desc':
-    'Ajoute un sous-menu « Even Better OneTab » lors d’un clic droit sur une page web. Désactivé, les actions n’apparaissent qu’au clic droit sur l’icône de la barre d’outils.',
-  'settings.toolbar.allContext.label': 'Afficher aussi sur les liens, images et sélections',
-  'settings.toolbar.allContext.desc':
-    'Inclure le menu lors d’un clic droit sur un lien, une image, une vidéo ou du texte sélectionné — pas seulement sur une zone vide de la page.',
+    'Ajoute un sous-menu « Better Tab Manager » lors d’un clic droit sur une page web. Désactivé, les actions n’apparaissent qu’au clic droit sur l’icône de la barre d’outils.',
 
   'settings.footer.madeWith': 'Fait avec ❤️ à NYC',
   'settings.footer.coffee': '☕ Offrez-moi un café',
-  'settings.footer.version': 'Even Better OneTab v{version}',
+  'settings.footer.version': 'Better Tab Manager v{version}',
   'settings.footer.privacy': 'Confidentialité',
 
   // sync & mobile
   'sync.heading': 'Synchro et mobile',
+  'sync.device.label': 'Synchroniser entre vos appareils',
+  'sync.device.desc':
+    'Gardez vos listes à jour sur chaque ordinateur où ce navigateur est connecté — sans compte ni jeton, via la synchronisation intégrée du navigateur.',
+  'sync.device.privacy':
+    'Vos onglets transitent par la synchronisation de votre navigateur. Sur Chrome, ajoutez une phrase secrète de synchronisation pour les chiffrer de bout en bout. Désactivez pour les garder sur cet appareil uniquement.',
+  'sync.device.enabledToast': 'Synchronisation des appareils activée',
+  'sync.device.disabledToast': 'Synchronisation des appareils désactivée',
+  'sync.mirror.label': 'Copier vers les favoris',
+  'sync.mirror.desc':
+    'Copie vos listes dans un dossier de favoris « Better Tab Manager » pour les ouvrir sur votre téléphone. À sens unique — vos favoris ne sont jamais lus.',
+  'sync.mirror.enabledToast': 'Copie des listes vers les favoris',
+  'sync.mirror.disabledToast': 'Copie vers les favoris désactivée',
+  'sync.mirror.denied': 'L’accès aux favoris est nécessaire pour copier vos listes',
+  'sync.gist.disclosure': 'Avancé : synchroniser avec un gist GitHub',
   'sync.introBefore': 'Synchronisez vos listes vers un ',
   'sync.introGist': 'Gist GitHub privé',
   'sync.introAfter':
@@ -283,5 +304,5 @@ export const fr: Catalog = {
     other: 'Remplacer toutes les listes actuelles par les {n} listes importées ?',
   },
   'backup.importedToast': { one: '{n} liste importée', other: '{n} listes importées' },
-  'backup.couldNotRead': 'Impossible de lire ce fichier — s’agit-il d’une sauvegarde Even Better OneTab ?',
+  'backup.couldNotRead': 'Impossible de lire ce fichier — s’agit-il d’une sauvegarde Better Tab Manager ?',
 }

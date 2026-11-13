@@ -23,6 +23,8 @@ export type Message =
   | { type: 'sync-setup'; token: string; gistId?: string }
   | { type: 'sync-push' }
   | { type: 'sync-pull' }
+  | { type: 'device-sync-set'; enabled: boolean }
+  | { type: 'mirror-set'; enabled: boolean }
 
 export interface SyncSetupResult {
   gistId: string

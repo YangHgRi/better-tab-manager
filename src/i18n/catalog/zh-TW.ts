@@ -12,9 +12,9 @@ export const zhTW: Catalog = {
   'lists.empty.title': '尚未儲存任何分頁',
   'lists.empty.lead': '把開啟的分頁收合成一份整齊的清單。三種方式儲存第一份：',
   'lists.empty.toolbarLabel': '工具列',
-  'lists.empty.toolbar': '按一下 Even Better OneTab 圖示，再按儲存按鈕。',
+  'lists.empty.toolbar': '按一下 Better Tab Manager 圖示，再按儲存按鈕。',
   'lists.empty.rightClickLabel': '右鍵',
-  'lists.empty.rightClick': '在任何頁面按右鍵，然後選擇 Even Better OneTab。',
+  'lists.empty.rightClick': '在任何頁面按右鍵，然後選擇 Better Tab Manager。',
   'lists.empty.keyboardLabel': '鍵盤',
   'lists.empty.keyboard': '在「設定 → 鍵盤快速鍵」中指定快速鍵。',
   'lists.noMatch': '沒有符合篩選條件的項目。',
@@ -59,12 +59,25 @@ export const zhTW: Catalog = {
   'card.toastOpenedRemoved': '已開啟並移除清單',
   'card.toastDeleted': '已刪除清單',
   'card.toastCopiedMarkdown': '已複製為 Markdown',
+  'card.selectedCount': { other: '已選 {n} 個' },
+  'card.moveTo': '移動到…',
+  'card.removeSelected': '移除',
+  'card.clearSelection': '清除',
+  'card.noOtherLists': '沒有其他清單',
+  'card.movedTabs': { other: '已移動 {n} 個分頁' },
+  'card.removedTabs': { other: '已移除 {n} 個分頁' },
 
   // tab row
   'tab.group': '分頁群組：{title}',
   'tab.unnamed': '未命名',
   'tab.wasPinned': '曾釘選',
   'tab.remove': '從清單移除',
+  'tab.edit': '編輯連結',
+  'tab.editTitlePlaceholder': '標題',
+  'tab.editUrlPlaceholder': '網址',
+  'tab.saveEdit': '儲存',
+  'files.blocked': { other: '有 {n} 個本機檔案無法開啟——請為 Better Tab Manager 開啟「允許存取檔案網址」。' },
+  'files.openSettings': '開啟設定',
 
   // history (recently deleted)
   'history.heading': '最近刪除',
@@ -97,7 +110,7 @@ export const zhTW: Catalog = {
   'popup.recentLists': '最近的清單',
   'popup.restoreList': '還原此清單',
   'popup.empty': '尚未儲存任何分頁',
-  'popup.openApp': '開啟 Even Better OneTab',
+  'popup.openApp': '開啟 Better Tab Manager',
   'popup.tabCount': { other: '{n} 個分頁' },
 
   // background feature
@@ -154,9 +167,6 @@ export const zhTW: Catalog = {
   'settings.appearance.density.label': '清單版面',
   'settings.appearance.density.compact': '緊湊',
   'settings.appearance.density.comfortable': '寬鬆',
-  'settings.appearance.pinnedPosition.label': '已釘選的清單',
-  'settings.appearance.pinnedPosition.top': '置於頂端',
-  'settings.appearance.pinnedPosition.bottom': '置於底端',
   'settings.appearance.tabDisplay.label': '分頁顯示',
   'settings.appearance.tabDisplay.titleAndUrl': '標題與網域',
   'settings.appearance.tabDisplay.title': '僅標題',
@@ -178,7 +188,7 @@ export const zhTW: Catalog = {
   'settings.storing.ignorePinned.label': '略過已釘選的分頁',
   'settings.storing.ignorePinned.desc': '儲存時會保留開啟已釘選的瀏覽器分頁。',
   'settings.storing.excludeIllegalURL.label': '略過瀏覽器內部頁面',
-  'settings.storing.excludeIllegalURL.desc': '不會儲存 about:、chrome:、file: 及類似的 URL。',
+  'settings.storing.excludeIllegalURL.desc': '不會儲存 about:、chrome: 及類似的 URL。',
   'settings.storing.removeDuplicate.label': '移除清單中重複的分頁',
   'settings.storing.pinGroupList.label': '釘選由分頁群組建立的清單',
   'settings.storing.pinGroupList.desc': '已釘選的清單在開啟時不會被移除。',
@@ -215,18 +225,27 @@ export const zhTW: Catalog = {
   'settings.toolbar.browserAction.showList': '開啟清單頁面',
   'settings.toolbar.pageContext.label': '顯示於頁面右鍵選單',
   'settings.toolbar.pageContext.desc':
-    '在網頁上按右鍵時加入「Even Better OneTab」子選單。關閉時，這些操作只會在對工具列圖示按右鍵時出現。',
-  'settings.toolbar.allContext.label': '也顯示於連結、圖片與選取範圍',
-  'settings.toolbar.allContext.desc':
-    '在對連結、圖片、影片或選取的文字按右鍵時也加入選單——不僅限於空白頁面區域。',
+    '在網頁上按右鍵時加入「Better Tab Manager」子選單。關閉時，這些操作只會在對工具列圖示按右鍵時出現。',
 
   'settings.footer.madeWith': '在 NYC 用 ❤️ 打造',
   'settings.footer.coffee': '☕ 請我喝杯咖啡',
-  'settings.footer.version': 'Even Better OneTab v{version}',
+  'settings.footer.version': 'Better Tab Manager v{version}',
   'settings.footer.privacy': '隱私權',
 
   // sync & mobile
   'sync.heading': '同步與行動裝置',
+  'sync.device.label': '在你的裝置間同步',
+  'sync.device.desc': '在登入此瀏覽器的每台電腦上保持清單一致——無需帳號或權杖，使用瀏覽器內建的同步。',
+  'sync.device.privacy':
+    '你的分頁會透過瀏覽器自身的同步傳輸。在 Chrome 中設定同步密碼即可達成端對端加密。關閉後只會保存在此裝置上。',
+  'sync.device.enabledToast': '已開啟裝置同步',
+  'sync.device.disabledToast': '已關閉裝置同步',
+  'sync.mirror.label': '鏡像到書籤',
+  'sync.mirror.desc': '將你的清單複製到名為「Better Tab Manager」的書籤資料夾，方便在手機上開啟。單向——絕不會讀取你的書籤。',
+  'sync.mirror.enabledToast': '正在將清單鏡像到書籤',
+  'sync.mirror.disabledToast': '已關閉書籤鏡像',
+  'sync.mirror.denied': '需要書籤存取權限才能鏡像清單',
+  'sync.gist.disclosure': '進階：使用 GitHub gist 同步',
   'sync.introBefore': '將你的清單同步到 ',
   'sync.introGist': '私人 GitHub Gist',
   'sync.introAfter':
@@ -282,5 +301,5 @@ export const zhTW: Catalog = {
     other: '要用匯入的 {n} 份清單取代所有目前的清單嗎？',
   },
   'backup.importedToast': { other: '已匯入 {n} 份清單' },
-  'backup.couldNotRead': '無法讀取該檔案——它是 Even Better OneTab 的備份嗎？',
+  'backup.couldNotRead': '無法讀取該檔案——它是 Better Tab Manager 的備份嗎？',
 }

@@ -3,6 +3,7 @@
   import { fly } from 'svelte/transition'
   import { applyLocale, t } from '../i18n/i18n.svelte'
   import { app, applyTheme, initState } from '../ui/state.svelte'
+  import { initSelection } from '../ui/selection.svelte'
   import { timeAgo } from '../ui/time'
   import Header from './Header.svelte'
   import HistoryPage from './HistoryPage.svelte'
@@ -11,6 +12,7 @@
   import Toast from './Toast.svelte'
 
   initState()
+  initSelection()
 
   $effect(() => {
     if (app.loaded) applyTheme(app.opts.theme)

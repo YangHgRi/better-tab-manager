@@ -11,7 +11,25 @@
   import { act } from './actions'
   import { startAutoScroll, stopAutoScroll } from './dnd-autoscroll'
   import TabRow from './TabRow.svelte'
+  import { canOpenFileUrls, isFileUrl } from '../core/file-urls'
+  import { showFileAccessToast } from './file-access'
   import { t } from '../i18n/i18n.svelte'
+  import {
+    type CarriedTab,
+    type DragItem,
+    beginMultiDrag,
+    carriedGroup,
+    clearSelection,
+    drag,
+    dragSourceListId,
+    endMultiDrag,
+    isSelected,
+    selection,
+    selectionCount,
+    selectedIndices,
+    snapshotSelected,
+    tabDnd,
+  } from '../ui/selection.svelte'
 
   let { list, canDrag = false }: { list: TabList; canDrag?: boolean } = $props()
 
@@ -22,23 +40,142 @@
 
   let tabItems = $state<TabDndItem[]>([])
   let draggingTabs = $state(false)
+  let tabsEl: HTMLElement | undefined = $state()
 
   $effect(() => {
     const items = list.tabs.map((tab, i) => ({ id: `${list._id}:${i}:${tab.url}`, tab }))
     if (!draggingTabs) tabItems = items
   })
 
+  /** Build the dnd item id the same way the render effect does. */
+  const dndId = (listId: string, index: number, url: string) => `${listId}:${index}:${url}`
+  /** Parse the tab index out of a dnd item id (`${listId}:${index}:${url}`). */
+  const idIndex = (id: string) => parseInt(id.slice(list._id.length + 1), 10)
+
   const onConsider = (e: CustomEvent<DndEvent<TabDndItem>>) => {
+    const info = e.detail.info
+    let items = e.detail.items
+    // A drag starting on a selected row (with >1 selected) becomes a group move:
+    // the *other* selected rows collapse out of the drag now and ride along as a
+    // buffer, so the drag stays as smooth as a single item (svelte-dnd-action's
+    // documented multi-drag approach).
+    if (info?.trigger === 'dragStarted' && info.id.startsWith(list._id + ':')) {
+      const grabbed = idIndex(info.id)
+      if (isSelected(list._id, grabbed) && selectionCount() > 1) {
+        // The whole selection, in final order: this list's selected rows by their
+        // original position (including the grabbed one), then any selected rows in
+        // other lists. On drop this group replaces the grabbed row.
+        const group: DragItem[] = []
+        for (const i of selectedIndices(list._id)) {
+          const tab = $state.snapshot(list.tabs[i]) as TabItem
+          group.push({ id: dndId(list._id, i, tab.url), tab, listId: list._id, index: i })
+        }
+        for (const l of app.lists) {
+          if (l._id === list._id) continue
+          for (const i of selectedIndices(l._id)) {
+            const tab = $state.snapshot(l.tabs[i]) as TabItem
+            group.push({ id: dndId(l._id, i, tab.url), tab, listId: l._id, index: i })
+          }
+        }
+        // collapse this list's *other* selected rows out of the drag (the grabbed
+        // one stays as the thing being dragged); they resize away instantly
+        const collapse = new Set(group.filter(g => g.listId === list._id && g.index !== grabbed).map(g => g.id))
+        items = items.filter(it => !collapse.has(it.id))
+        beginMultiDrag(group, list._id, info.id)
+      } else {
+        endMultiDrag()
+      }
+      // svelte-dnd-action locks the source zone's height at drag start (inline
+      // min-height) so it can't shrink. Clear it once here so the list resizes to
+      // its rows as they move out; the CSS min-height keeps a one-row floor. With
+      // instant reordering (flipDurationMs 0) the live drop detection re-reads the
+      // new positions immediately, so this no longer makes detection sticky.
+      if (tabsEl) tabsEl.style.minHeight = ''
+    }
     draggingTabs = true
+    tabDnd.dragging = true
     startAutoScroll()
-    tabItems = e.detail.items
+    tabItems = items
   }
 
   const onFinalize = (e: CustomEvent<DndEvent<TabDndItem>>) => {
-    tabItems = e.detail.items
+    const items = e.detail.items
     draggingTabs = false
+    tabDnd.dragging = false
     stopAutoScroll()
-    act({ type: 'list-update', id: list._id, patch: { tabs: tabItems.map(i => i.tab) } })
+
+    if (drag.active) {
+      const grabbedId = e.detail.info?.id
+      const gotDragged = !!grabbedId && items.some(it => it.id === grabbedId)
+      if (gotDragged) finishMultiDrag(items, grabbedId!)
+      else {
+        // the source list the group left: persist what remains (its other selected
+        // rows were already collapsed out during the drag)
+        tabItems = items
+        act({ type: 'list-update', id: list._id, patch: { tabs: items.map(i => i.tab) } })
+      }
+      return
+    }
+
+    tabItems = items
+    act({ type: 'list-update', id: list._id, patch: { tabs: items.map(i => i.tab) } })
+    clearSelection()
+  }
+
+  /** Drop target of a group move: drop the whole selection in at the release point, in order. */
+  const finishMultiDrag = (items: TabDndItem[], grabbedId: string) => {
+    const group = carriedGroup()
+    const srcId = dragSourceListId()
+    // replace the grabbed row with the full ordered group at the drop position
+    const p = items.findIndex(it => it.id === grabbedId)
+    const merged = [
+      ...items.slice(0, p),
+      ...group.map(g => ({ id: g.id, tab: g.tab })),
+      ...items.slice(p + 1),
+    ]
+    tabItems = merged
+    act({ type: 'list-update', id: list._id, patch: { tabs: merged.map(i => i.tab) } })
+
+    // Group rows from the grabbed item's own source list are removed by that
+    // card's own finalize (they were collapsed there). Rows from *other* lists
+    // still need pulling out of those lists here.
+    const bySource = new Map<string, number[]>()
+    for (const g of group) {
+      if (g.listId === srcId || g.listId === list._id) continue
+      const arr = bySource.get(g.listId) ?? []
+      arr.push(g.index)
+      bySource.set(g.listId, arr)
+    }
+    for (const [lid, idxs] of bySource) {
+      const src = app.lists.find(l => l._id === lid)
+      if (!src) continue
+      const rm = new Set(idxs)
+      const newTabs = src.tabs.filter((_, i) => !rm.has(i)).map(tb => $state.snapshot(tb))
+      act({ type: 'list-update', id: lid, patch: { tabs: newTabs } })
+    }
+
+    endMultiDrag()
+    clearSelection()
+  }
+
+  /**
+   * svelte-dnd-action hook: badge the dragged row with the count when moving a
+   * group. The library positions the drag clone itself (position: fixed), so we
+   * must NOT touch its `position` — the badge is absolute against that clone.
+   */
+  const addDragBadge = (el?: HTMLElement) => {
+    if (!el) return
+    const existing = el.querySelector('.drag-badge')
+    if (drag.active && drag.count > 1) {
+      if (!existing) {
+        const b = document.createElement('span')
+        b.className = 'drag-badge'
+        b.textContent = String(drag.count)
+        el.appendChild(b)
+      }
+    } else {
+      existing?.remove()
+    }
   }
 
   // --- title editing ---
@@ -133,13 +270,12 @@
     // explicit menu choice wins; otherwise the "Opening a list" option decides
     // (pinned lists are never auto-removed)
     const remove = removeArg ?? (app.opts.openListAction === 'open-and-remove' && !list.pinned)
-    if (!remove) {
-      act({ type: 'restore-list', id: list._id, newWindow, remove: false })
-      return
-    }
-    const captured = captureForUndo()
-    const { ok } = await act({ type: 'restore-list', id: list._id, newWindow, remove: true })
-    if (ok) toast(t('card.toastOpenedRemoved'), 'info', undoAction(captured))
+    const captured = remove ? captureForUndo() : null
+    const { ok, result } = await act<{ blockedFiles?: number }>({ type: 'restore-list', id: list._id, newWindow, remove })
+    if (!ok) return
+    // file:// tabs that couldn't open were kept in the list — explain how to fix it
+    if (result?.blockedFiles) showFileAccessToast(result.blockedFiles)
+    else if (captured) toast(t('card.toastOpenedRemoved'), 'info', undoAction(captured))
   }
 
   const removeListNow = async () => {
@@ -167,30 +303,108 @@
   const openTab = async (index: number, keep = false) => {
     const tab = list.tabs[index]
     if (!tab) return
+    // local files need "Allow access to file URLs"; say so instead of failing silently
+    if (isFileUrl(tab.url) && !(await canOpenFileUrls())) {
+      showFileAccessToast(1)
+      return
+    }
     // single tabs follow the same "Open tabs in" setting as list restores
     let createdId: number | undefined
     let createdWindowId: number | undefined
-    if (app.opts.restorePosition === 'new-window') {
-      const win = await chrome.windows.create({ url: tab.url, focused: app.opts.focusOpenedTab })
-      createdId = win.tabs?.[0]?.id
-      createdWindowId = win.id
-    } else {
-      const created = await chrome.tabs.create({
-        url: tab.url,
-        active: app.opts.focusOpenedTab,
-        ...(app.opts.restorePosition === 'start' ? { index: 0 } : {}),
-      })
-      createdId = created.id
-      createdWindowId = created.windowId
+    try {
+      if (app.opts.restorePosition === 'new-window') {
+        const win = await chrome.windows.create({ url: tab.url, focused: app.opts.focusOpenedTab })
+        createdId = win.tabs?.[0]?.id
+        createdWindowId = win.id
+      } else {
+        const created = await chrome.tabs.create({
+          url: tab.url,
+          active: app.opts.focusOpenedTab,
+          ...(app.opts.restorePosition === 'start' ? { index: 0 } : {}),
+        })
+        createdId = created.id
+        createdWindowId = created.windowId
+      }
+    } catch (e) {
+      // it didn't open, so it must not be removed from the list either
+      toast(e instanceof Error ? e.message : String(e), 'error')
+      return
     }
     // a tab stored from a group goes back into that group (join it if open)
     if (tab.group && createdId != null) {
       await placeTabsInGroup([createdId], $state.snapshot(tab.group), createdWindowId)
     }
-    // holding cmd/ctrl keeps the tab in the list regardless of the setting
-    if (!keep && app.opts.itemClickAction === 'open-and-remove') {
+    // holding cmd/ctrl keeps the tab in the list regardless of the setting.
+    // pinned lists never lose items (matches whole-list restore, which also
+    // leaves pinned lists intact) — opening a single tab from one keeps it.
+    if (!keep && !list.pinned && app.opts.itemClickAction === 'open-and-remove') {
       const tabs = list.tabs.filter((_, i) => i !== index)
       act({ type: 'list-update', id: list._id, patch: { tabs } })
+    }
+  }
+
+  const editTab = (index: number, title: string) => {
+    const tabs = list.tabs.map((tb, i) =>
+      i === index ? { ...$state.snapshot(tb), title } : $state.snapshot(tb),
+    )
+    act({ type: 'list-update', id: list._id, patch: { tabs } })
+  }
+
+  // index-based selection would go stale if this list changes size out from under
+  // it, so drop the whole selection when that happens
+  let prevLen = -1
+  $effect(() => {
+    const len = list.tabs.length
+    if (prevLen === -1) {
+      prevLen = len
+      return
+    }
+    if (len !== prevLen) {
+      prevLen = len
+      if (selectedIndices(list._id).length) clearSelection()
+    }
+  })
+
+  /** Removes every selected tab (× on a selected row), with a single undo toast. */
+  const removeSelected = () => {
+    const carried = snapshotSelected()
+    if (!carried.length) return
+    const n = carried.length
+    const bySource = new Map<string, number[]>()
+    for (const c of carried) {
+      const arr = bySource.get(c.listId) ?? []
+      arr.push(c.index)
+      bySource.set(c.listId, arr)
+    }
+    for (const [lid, idxs] of bySource) {
+      const src = app.lists.find(l => l._id === lid)
+      if (!src) continue
+      const rm = new Set(idxs)
+      const newTabs = src.tabs.filter((_, i) => !rm.has(i)).map(tb => $state.snapshot(tb))
+      act({ type: 'list-update', id: lid, patch: { tabs: newTabs } })
+    }
+    clearSelection()
+    toast(t('card.removedTabs', { n }), 'info', { label: t('card.undo'), fn: () => restoreCarried(carried) })
+  }
+
+  /** Undo of a bulk remove: put each tab back into its list (recreate the list if it's gone). */
+  const restoreCarried = (carried: CarriedTab[]) => {
+    const bySource = new Map<string, CarriedTab[]>()
+    for (const c of carried) {
+      const arr = bySource.get(c.listId) ?? []
+      arr.push(c)
+      bySource.set(c.listId, arr)
+    }
+    for (const [lid, items] of bySource) {
+      const src = app.lists.find(l => l._id === lid)
+      const ordered = [...items].sort((a, b) => a.index - b.index)
+      if (src) {
+        const tabs = src.tabs.map(tb => $state.snapshot(tb))
+        for (const c of ordered) tabs.splice(Math.min(c.index, tabs.length), 0, c.tab)
+        act({ type: 'list-update', id: lid, patch: { tabs } })
+      } else {
+        act({ type: 'list-add', list: { tabs: ordered.map(c => c.tab) } })
+      }
     }
   }
 
@@ -364,10 +578,19 @@
   {#if list.expand}
     <div
       class="tabs"
+      class:bridged={tabDnd.dragging}
+      bind:this={tabsEl}
       use:dndzone={{
         items: tabItems,
         type: 'tab',
-        flipDurationMs: 120,
+        // deliberately 0 (not matched to the visual flip): keeps the library's
+        // drop detection running at its fast 20ms interval instead of the ~100ms
+        // one a nonzero value forces, so fast dragging doesn't clump. The library
+        // strips the flip transform when it measures, so detection stays correct
+        // even while the rows below animate.
+        flipDurationMs: 0,
+        dragDisabled: selection.shift,
+        transformDraggedElement: addDragBadge,
         dropTargetStyle: { outline: '2px dashed var(--border)', outlineOffset: '-2px', borderRadius: '8px' },
       }}
       onconsider={onConsider}
@@ -377,11 +600,15 @@
         <div class="tab-wrap" class:leaving={leavingTabs.has(item.id)} animate:flip={{ duration: 120 }}>
           <TabRow
             tab={item.tab}
+            listId={list._id}
+            {index}
             display={app.opts.itemDisplay}
             hideFavicon={app.opts.hideFavicon}
             removeVisible={app.opts.tabRemove}
             onOpen={keep => openTab(index, keep)}
             onRemove={() => removeTab(index)}
+            onRemoveSelection={removeSelected}
+            onEdit={title => editTab(index, title)}
           />
         </div>
       {/each}
@@ -406,10 +633,8 @@
     pointer-events: none;
   }
 
-  .tab-wrap {
-    transition: opacity 0.13s ease;
-  }
-
+  /* no CSS transition on the dnd items — it corrupts svelte-dnd-action's
+     position measurements during the flip animation (drop detection goes sticky) */
   .tab-wrap.leaving {
     opacity: 0;
     pointer-events: none;
@@ -652,7 +877,41 @@
     display: flex;
     flex-direction: column;
     padding: 2px 0;
-    min-height: 8px;
+    /* one-row floor so a list whose rows are all dragged out stays droppable */
+    min-height: 34px;
     outline: none;
+  }
+
+  /*
+   * While a tab is being dragged, grow each zone's hit area up and down (padding)
+   * and pull it back visually (negative margin) so adjacent lists' drop zones
+   * meet — no dead vertical gap where the item snaps back to its source list.
+   * Left/right stays the card width, so beyond the sides still reads as "no list".
+   * Only during a drag, so the header's buttons aren't covered the rest of the time.
+   */
+  .tabs.bridged {
+    padding-top: 44px;
+    padding-bottom: 44px;
+    margin-top: -44px;
+    margin-bottom: -44px;
+  }
+
+  /* count badge on a multi-tab drag (element is created imperatively, so :global) */
+  :global(.drag-badge) {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
   }
 </style>

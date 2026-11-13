@@ -1,5 +1,5 @@
 {
-  "appDesc": { "message": "Enregistrez et restaurez vos onglets en un clic — une alternative à OneTab rapide et privée, avec synchro et visionneuse mobile." },
+  "appDesc": { "message": "Enregistrez et restaurez vos onglets en un clic — un gestionnaire d'onglets rapide et privé, avec synchro et visionneuse mobile." },
   "cmdStoreSelected": { "message": "Enregistrer les onglets sélectionnés" },
   "cmdStoreAll": { "message": "Enregistrer tous les onglets de cette fenêtre" },
   "cmdStoreAllWindows": { "message": "Enregistrer tous les onglets de toutes les fenêtres" },

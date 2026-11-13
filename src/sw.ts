@@ -16,7 +16,24 @@ import {
   restoreTabFromTrash,
   updateList,
 } from './background/mutations'
-import { SYNC_ALARM, autoPullMerge, pullMerge, pushNow, schedulePush, setupSync } from './background/sync'
+import {
+  DEVICE_ALARM,
+  DEVICE_PULL_ALARM,
+  MIRROR_ALARM,
+  SYNC_ALARM,
+  autoSyncStartup,
+  mirrorNow,
+  onBookmarkPermissionRemoved,
+  onDeviceRemoteChange,
+  pullMerge,
+  pushDeviceNow,
+  pushNow,
+  scheduleSync,
+  setDeviceSync,
+  setMirror,
+  setupSync,
+} from './background/sync'
+import { isDeviceSyncChange } from './core/sync/device'
 import {
   openTabLists,
   restoreLatestList,
@@ -61,7 +78,12 @@ chrome.runtime.onInstalled.addListener(details => {
 chrome.runtime.onStartup.addListener(() => {
   rebuildMenus()
   applyBrowserAction()
-  autoPullMerge()
+  autoSyncStartup()
+})
+
+// A revoked bookmarks permission means the mirror can no longer write — disable it.
+chrome.permissions.onRemoved.addListener(permissions => {
+  if (permissions.permissions?.includes('bookmarks')) onBookmarkPermissionRemoved()
 })
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -82,11 +104,19 @@ chrome.commands.onCommand.addListener(command => {
 
 chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === SYNC_ALARM) pushNow().catch(() => {})
+  else if (alarm.name === DEVICE_ALARM) pushDeviceNow().catch(() => {})
+  else if (alarm.name === DEVICE_PULL_ALARM) onDeviceRemoteChange().catch(() => {})
+  else if (alarm.name === MIRROR_ALARM) mirrorNow().catch(() => {})
 })
 
 // Rebuild the "Store to list…" submenu when titled lists change.
 let menuRebuildTimer: ReturnType<typeof setTimeout> | undefined
 chrome.storage.onChanged.addListener((changes, area) => {
+  // another device wrote to storage.sync → debounce a pull+merge
+  if (area === 'sync') {
+    if (isDeviceSyncChange(changes)) chrome.alarms.create(DEVICE_PULL_ALARM, { delayInMinutes: 0.25 })
+    return
+  }
   if (area !== 'local') return
   if (changes.lists || changes.opts) {
     clearTimeout(menuRebuildTimer)
@@ -95,7 +125,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (changes.opts) {
     applyBrowserAction()
     // settings sync: option edits ride the same debounced upload as list edits
-    schedulePush()
+    scheduleSync()
   }
 })
 
@@ -126,12 +156,16 @@ const handleMessage = async (message: Message, sender: chrome.runtime.MessageSen
       const lists = await getLists()
       const list = lists.find(l => l._id === message.id)
       if (!list) throw new Error('List not found')
-      await restoreList(list, { windowId: sender.tab?.windowId, newWindow: message.newWindow })
+      const { blocked } = await restoreList(list, { windowId: sender.tab?.windowId, newWindow: message.newWindow })
       // callers that don't decide (e.g. the popup) fall back to the option
       const opts = await getOptions()
       const remove = message.remove ?? (opts.openListAction === 'open-and-remove' && !list.pinned)
-      if (remove) await removeList(message.id)
-      return
+      if (remove) {
+        // file:// tabs that couldn't open stay in the list instead of being lost with it
+        if (blocked.length) await updateList(message.id, { tabs: blocked })
+        else await removeList(message.id)
+      }
+      return { blockedFiles: blocked.length }
     }
     case 'trash-restore':
       return restoreFromTrash(message.id)
@@ -159,6 +193,10 @@ const handleMessage = async (message: Message, sender: chrome.runtime.MessageSen
       return pushNow()
     case 'sync-pull':
       return pullMerge()
+    case 'device-sync-set':
+      return setDeviceSync(message.enabled)
+    case 'mirror-set':
+      return setMirror(message.enabled)
   }
 }
 

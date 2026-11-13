@@ -33,7 +33,7 @@
     const filtered = app.lists.filter(matches)
     const pinned = filtered.filter(l => l.pinned)
     const rest = filtered.filter(l => !l.pinned)
-    const ordered = app.opts.pinnedPosition === 'bottom' ? [...rest, ...pinned] : [...pinned, ...rest]
+    const ordered = [...pinned, ...rest]
     if (!dragging) dndItems = ordered.map(list => ({ id: list._id, list }))
   })
 

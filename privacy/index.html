@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="light dark" />
-<title>Privacy Policy — Even Better OneTab</title>
+<title>Privacy Policy — Better Tab Manager</title>
 <style>
   :root {
     --bg: #f5f6f8; --surface: #fff; --text: #1b1f24; --text-2: #667080;
@@ -39,55 +39,43 @@
 <body>
 <div class="wrap">
   <h1>Privacy Policy</h1>
-  <div class="updated">Even Better OneTab browser extension · Last updated July 17, 2026</div>
+  <div class="updated">Better Tab Manager browser extension · Last updated November 13, 2026</div>
 
   <div class="tldr">
-    <strong>In short:</strong> your data stays on your device. We collect nothing, transmit
-    nothing to our own servers (we don't have any), and include no analytics or trackers.
-    Optional sync sends your lists only to your own GitHub account.
+    <strong>In short:</strong> your data stays on your device. We collect nothing, transmit nothing to our own servers (we don't have any), and include no analytics or trackers. Optional sync sends your lists only to places you control: your browser's own sync, your own bookmarks, or your own GitHub account.
   </div>
 
   <h2>What the extension stores</h2>
   <p>
-    When you store tabs, Even Better OneTab saves the titles, URLs, favicon addresses, and
-    tab-group names of those tabs — along with list names, tags, colors, your settings, and a
-    recently-deleted history — in your browser's local extension storage. This data never
-    leaves your device unless you enable sync.
+    When you store tabs, Better Tab Manager saves the titles, URLs, favicon addresses, and tab-group names of those tabs — along with list names, tags, colors, your settings, and a recently-deleted history — in your browser's local extension storage. This data never leaves your device unless you enable sync.
   </p>
 
   <h2>What we collect</h2>
   <p>
-    Nothing. The extension contains no analytics, no telemetry, no error reporting, no
-    advertising, and no third-party services. The developer never receives, sees, or has access
-    to any of your data.
+    Nothing. The extension contains no analytics, no telemetry, no error reporting, no advertising, and no third-party services. The developer never receives, sees, or has access to any of your data.
+  </p>
+
+  <h2>Optional device sync</h2>
+  <p>
+    Off by default. If you turn on <em>Sync across your devices</em>, the extension keeps a copy of your lists, deleted-list markers, and settings in the browser's built-in extension sync storage (<code>chrome.storage.sync</code>). Your browser carries that copy to your other computers through its own sync service under your own browser account (for example, Chrome Sync), as it does for your other browser data; that service's own privacy terms apply. The developer has no access to it, and no server of ours is involved. Inline image icons are left out of the synced copy to keep it small. Turning the option off stops syncing from that device.
+  </p>
+
+  <h2>Optional bookmark mirror</h2>
+  <p>
+    Off by default. If you turn on <em>Mirror to bookmarks</em>, the extension asks for the <code>bookmarks</code> permission at that moment (it is never requested on install) and writes your saved lists into a single folder named “Better Tab Manager” in your bookmarks, so you can open them on your phone. It only creates and updates that one folder and never reads or changes your other bookmarks. If your browser syncs bookmarks, that folder travels with them like any other bookmark. Turning the option off removes the folder.
   </p>
 
   <h2>Optional GitHub Gist sync</h2>
   <p>
-    If you choose to enable sync, you provide a GitHub access token that you create on your own
-    GitHub account. The extension then uploads your tab lists as a private gist on
-    <em>your</em> account, communicating directly with GitHub's API
-    (<code>api.github.com</code>) over HTTPS. No server other than GitHub's is ever contacted,
-    and the developer has no access to your token, your gist, or your lists. Your token is
-    stored in the extension's local storage on your device. GitHub's handling of your data is
-    governed by <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" rel="noreferrer">GitHub's Privacy Statement</a>.
+    If you choose to enable sync, you provide a GitHub access token that you create on your own GitHub account. The extension then uploads your tab lists as a private gist on <em>your</em> account, communicating directly with GitHub's API (<code>api.github.com</code>) over HTTPS. No server other than GitHub's is ever contacted, and the developer has no access to your token, your gist, or your lists. Your token is stored in the extension's local storage on your device. GitHub's handling of your data is governed by <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" rel="noreferrer">GitHub's Privacy Statement</a>.
   </p>
   <p>
-    A note on the token: a classic GitHub token with the <code>gist</code> scope can read and
-    write <em>every</em> gist on your account, not only the one this extension creates. If you'd
-    like to limit that, create a fine-grained personal access token restricted to gists instead.
-    Either way the token lives only on your device — treat it like a password and don't paste it
-    anywhere you wouldn't paste one.
+    A note on the token: a classic GitHub token with the <code>gist</code> scope can read and write <em>every</em> gist on your account, not only the one this extension creates. If you'd like to limit that, create a fine-grained personal access token restricted to gists instead. Either way the token lives only on your device — treat it like a password and don't paste it anywhere you wouldn't paste one.
   </p>
 
   <h2>The mobile viewer</h2>
   <p>
-    The companion <a href="https://bphirsh.github.io/even-better-onetab/viewer/">mobile viewer
-    page</a> works the same way: the token and gist id you enter are stored only in that
-    browser's local storage, on that device, and are used solely to fetch your gist from
-    GitHub's API. The page has no analytics and no backend. To show each site's icon it loads
-    favicons from Google's public favicon service (<code>google.com/s2/favicons</code>), which
-    means that service sees the domains in your lists as you view them.
+    The companion <a href="https://bphirsh.github.io/better-tab-manager/viewer/">mobile viewer page</a> works the same way: the token and gist id you enter are stored only in that browser's local storage, on that device, and are used solely to fetch your gist from GitHub's API. The page has no analytics and no backend. To show each site's icon it loads favicons from Google's public favicon service (<code>google.com/s2/favicons</code>), which means that service sees the domains in your lists as you view them.
   </p>
 
   <h2>Permissions, briefly</h2>
@@ -96,20 +84,20 @@
     <li><strong>storage</strong> — keep your lists and settings in the browser</li>
     <li><strong>contextMenus</strong> — the right-click store actions</li>
     <li><strong>alarms</strong> — a short timer that batches sync uploads</li>
+    <li><strong>bookmarks</strong> (optional) — requested only if you turn on the bookmark mirror, and used only to write its one folder</li>
   </ul>
+  <p>
+    Saved local files (<code>file://</code> pages) can only be re-opened if you turn on the browser's “Allow access to file URLs” setting for the extension; the extension never reads the contents of those files.
+  </p>
 
   <h2>Data removal</h2>
   <p>
-    Uninstalling the extension deletes all locally stored data. If you used sync, you can
-    delete the gist from your GitHub account at any time; disconnecting sync in the extension's
-    settings removes the token from your browser.
+    Uninstalling the extension deletes all locally stored data. Turning off the bookmark mirror removes its bookmarks folder. If you used gist sync, you can delete the gist from your GitHub account at any time; disconnecting sync in the extension's settings removes the token from your browser.
   </p>
 
   <h2>Changes &amp; contact</h2>
   <p>
-    If this policy changes, the updated version will be published at this address with a new
-    date. Questions or concerns: open an issue at
-    <a href="https://github.com/bphirsh/even-better-onetab/issues">github.com/bphirsh/even-better-onetab</a>.
+    If this policy changes, the updated version will be published at this address with a new date. Questions or concerns: open an issue at <a href="https://github.com/bphirsh/better-tab-manager/issues">github.com/bphirsh/better-tab-manager</a>.
   </p>
 </div>
 </body>

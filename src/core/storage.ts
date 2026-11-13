@@ -11,6 +11,7 @@ const SYNC_STATE_KEY = 'syncState'
 const TOMBSTONES_KEY = 'syncTombstones'
 const TRASH_KEY = 'trash'
 const TAB_TRASH_KEY = 'tabTrash'
+const DEVICE_ID_KEY = 'deviceId'
 
 const TOMBSTONE_TTL = 30 * 86_400_000
 // Retention time is the real policy; this cap is only a quota backstop
@@ -60,9 +61,26 @@ export const getOptsUpdatedAt = async (): Promise<number> => {
   return typeof at === 'number' ? at : 0
 }
 
+export const SYNC_CONFIG_DEFAULTS: SyncConfig = {
+  enabled: false,
+  gistToken: '',
+  gistId: '',
+  deviceSync: false,
+  bookmarkMirror: false,
+}
+
 export const getSyncConfig = async (): Promise<SyncConfig> => {
   const { [SYNC_CONFIG_KEY]: config } = await chrome.storage.local.get(SYNC_CONFIG_KEY)
-  return { enabled: false, gistToken: '', gistId: '', ...(config ?? {}) }
+  return { ...SYNC_CONFIG_DEFAULTS, ...(config ?? {}) }
+}
+
+/** Stable per-install id so a device can recognise (and skip) its own storage.sync writes. */
+export const getDeviceId = async (): Promise<string> => {
+  const { [DEVICE_ID_KEY]: id } = await chrome.storage.local.get(DEVICE_ID_KEY)
+  if (typeof id === 'string' && id) return id
+  const fresh = genId()
+  await chrome.storage.local.set({ [DEVICE_ID_KEY]: fresh })
+  return fresh
 }
 
 export const setSyncConfig = async (config: SyncConfig) => {

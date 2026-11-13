@@ -12,9 +12,9 @@ export const ru: Catalog = {
   'lists.empty.title': 'Пока нет сохранённых вкладок',
   'lists.empty.lead': 'Сверните открытые вкладки в аккуратный список. Три способа сохранить первый:',
   'lists.empty.toolbarLabel': 'Панель',
-  'lists.empty.toolbar': 'Нажмите значок Even Better OneTab, затем кнопку сохранения.',
+  'lists.empty.toolbar': 'Нажмите значок Better Tab Manager, затем кнопку сохранения.',
   'lists.empty.rightClickLabel': 'Правый клик',
-  'lists.empty.rightClick': 'Нажмите правой кнопкой на любой странице и выберите Even Better OneTab.',
+  'lists.empty.rightClick': 'Нажмите правой кнопкой на любой странице и выберите Better Tab Manager.',
   'lists.empty.keyboardLabel': 'Клавиатура',
   'lists.empty.keyboard': 'Назначьте сочетание в Настройках → Сочетания клавиш.',
   'lists.noMatch': 'Ничего не найдено по фильтру.',
@@ -59,12 +59,25 @@ export const ru: Catalog = {
   'card.toastOpenedRemoved': 'Список открыт и удалён',
   'card.toastDeleted': 'Список удалён',
   'card.toastCopiedMarkdown': 'Скопировано как Markdown',
+  'card.selectedCount': { one: 'Выбрана {n}', few: 'Выбрано {n}', many: 'Выбрано {n}', other: 'Выбрано {n}' },
+  'card.moveTo': 'Переместить в…',
+  'card.removeSelected': 'Убрать',
+  'card.clearSelection': 'Сбросить',
+  'card.noOtherLists': 'Нет других списков',
+  'card.movedTabs': { one: 'Перемещена {n} вкладка', few: 'Перемещено {n} вкладки', many: 'Перемещено {n} вкладок', other: 'Перемещено {n} вкладок' },
+  'card.removedTabs': { one: 'Удалена {n} вкладка', few: 'Удалено {n} вкладки', many: 'Удалено {n} вкладок', other: 'Удалено {n} вкладок' },
 
   // tab row
   'tab.group': 'Группа вкладок: {title}',
   'tab.unnamed': 'без имени',
   'tab.wasPinned': 'Была закреплена',
   'tab.remove': 'Убрать из списка',
+  'tab.edit': 'Изменить ссылку',
+  'tab.editTitlePlaceholder': 'Заголовок',
+  'tab.editUrlPlaceholder': 'URL',
+  'tab.saveEdit': 'Сохранить',
+  'files.blocked': { one: 'Не удалось открыть {n} локальный файл — включите «Разрешить открывать локальные файлы по ссылкам» для Better Tab Manager.', few: 'Не удалось открыть {n} локальных файла — включите «Разрешить открывать локальные файлы по ссылкам» для Better Tab Manager.', many: 'Не удалось открыть {n} локальных файлов — включите «Разрешить открывать локальные файлы по ссылкам» для Better Tab Manager.', other: 'Не удалось открыть {n} локального файла — включите «Разрешить открывать локальные файлы по ссылкам» для Better Tab Manager.' },
+  'files.openSettings': 'Открыть настройки',
 
   // history (recently deleted)
   'history.heading': 'Недавно удалённые',
@@ -97,7 +110,7 @@ export const ru: Catalog = {
   'popup.recentLists': 'Недавние списки',
   'popup.restoreList': 'Восстановить этот список',
   'popup.empty': 'Пока нет сохранённых вкладок',
-  'popup.openApp': 'Открыть Even Better OneTab',
+  'popup.openApp': 'Открыть Better Tab Manager',
   'popup.tabCount': { one: '{n} вкладка', few: '{n} вкладки', many: '{n} вкладок', other: '{n} вкладки' },
 
   // background feature
@@ -154,9 +167,6 @@ export const ru: Catalog = {
   'settings.appearance.density.label': 'Вид списка',
   'settings.appearance.density.compact': 'Компактный',
   'settings.appearance.density.comfortable': 'Просторный',
-  'settings.appearance.pinnedPosition.label': 'Закреплённые списки',
-  'settings.appearance.pinnedPosition.top': 'Сверху',
-  'settings.appearance.pinnedPosition.bottom': 'Снизу',
   'settings.appearance.tabDisplay.label': 'Отображение вкладок',
   'settings.appearance.tabDisplay.titleAndUrl': 'Название и домен',
   'settings.appearance.tabDisplay.title': 'Только название',
@@ -178,7 +188,7 @@ export const ru: Catalog = {
   'settings.storing.ignorePinned.label': 'Пропускать закреплённые вкладки',
   'settings.storing.ignorePinned.desc': 'Закреплённые вкладки браузера остаются открытыми при сохранении.',
   'settings.storing.excludeIllegalURL.label': 'Пропускать внутренние страницы браузера',
-  'settings.storing.excludeIllegalURL.desc': 'URL вида about:, chrome:, file: и подобные не сохраняются.',
+  'settings.storing.excludeIllegalURL.desc': 'URL вида about:, chrome: и подобные не сохраняются.',
   'settings.storing.removeDuplicate.label': 'Удалять повторяющиеся вкладки в списке',
   'settings.storing.pinGroupList.label': 'Закреплять списки из групп вкладок',
   'settings.storing.pinGroupList.desc': 'Закреплённые списки не удаляются при открытии.',
@@ -215,18 +225,29 @@ export const ru: Catalog = {
   'settings.toolbar.browserAction.showList': 'Открывает страницу списков',
   'settings.toolbar.pageContext.label': 'Показывать в контекстном меню страницы',
   'settings.toolbar.pageContext.desc':
-    'Добавляет подменю «Even Better OneTab» при правом клике по странице. Если выключено, действия появляются только при правом клике по значку на панели.',
-  'settings.toolbar.allContext.label': 'Показывать и на ссылках, изображениях и выделении',
-  'settings.toolbar.allContext.desc':
-    'Включает меню при правом клике по ссылке, изображению, видео или выделенному тексту — не только по пустой области страницы.',
+    'Добавляет подменю «Better Tab Manager» при правом клике по странице. Если выключено, действия появляются только при правом клике по значку на панели.',
 
   'settings.footer.madeWith': 'Сделано с ❤️ в NYC',
   'settings.footer.coffee': '☕ Купите мне кофе',
-  'settings.footer.version': 'Even Better OneTab v{version}',
+  'settings.footer.version': 'Better Tab Manager v{version}',
   'settings.footer.privacy': 'Конфиденциальность',
 
   // sync & mobile
   'sync.heading': 'Синхронизация и телефон',
+  'sync.device.label': 'Синхронизация между устройствами',
+  'sync.device.desc':
+    'Держите списки одинаковыми на всех компьютерах, где выполнен вход в этот браузер, — без аккаунта и токена, через встроенную синхронизацию браузера.',
+  'sync.device.privacy':
+    'Вкладки передаются через синхронизацию вашего браузера. В Chrome задайте кодовую фразу синхронизации, чтобы включить сквозное шифрование. Отключите, чтобы хранить их только на этом устройстве.',
+  'sync.device.enabledToast': 'Синхронизация устройств включена',
+  'sync.device.disabledToast': 'Синхронизация устройств выключена',
+  'sync.mirror.label': 'Отражать в закладки',
+  'sync.mirror.desc':
+    'Копирует ваши списки в папку закладок «Better Tab Manager», чтобы открывать их на телефоне. Односторонне — закладки никогда не читаются обратно.',
+  'sync.mirror.enabledToast': 'Списки отражаются в закладки',
+  'sync.mirror.disabledToast': 'Отражение в закладки выключено',
+  'sync.mirror.denied': 'Для отражения списков нужен доступ к закладкам',
+  'sync.gist.disclosure': 'Дополнительно: синхронизация через GitHub gist',
   'sync.introBefore': 'Синхронизируйте списки в ',
   'sync.introGist': 'приватный GitHub Gist',
   'sync.introAfter':
@@ -285,5 +306,5 @@ export const ru: Catalog = {
     other: 'Заменить все текущие списки {n} импортированными списками?',
   },
   'backup.importedToast': { one: 'Импортирован {n} список', few: 'Импортировано {n} списка', many: 'Импортировано {n} списков', other: 'Импортировано {n} списка' },
-  'backup.couldNotRead': 'Не удалось прочитать файл — это резервная копия Even Better OneTab?',
+  'backup.couldNotRead': 'Не удалось прочитать файл — это резервная копия Better Tab Manager?',
 }

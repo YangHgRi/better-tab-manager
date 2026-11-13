@@ -59,9 +59,14 @@ export interface Snapshot {
 }
 
 export interface SyncConfig {
+  /** GitHub gist auto-sync (the original, token-based transport). */
   enabled: boolean
   gistToken: string
   gistId: string
+  /** Cross-device sync via chrome.storage.sync (rides the browser's own sync). Opt-in. */
+  deviceSync: boolean
+  /** One-way mirror of the lists into the browser's bookmarks (mobile access). Opt-in. */
+  bookmarkMirror: boolean
 }
 
 export interface SyncState {

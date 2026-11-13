@@ -7,8 +7,6 @@ export interface Options {
   theme: 'auto' | 'light' | 'dark'
   /** Spacing scale for the list page. */
   density: 'compact' | 'comfortable'
-  /** Where pinned lists are grouped on the list page. */
-  pinnedPosition: 'top' | 'bottom'
   /** What clicking the toolbar button does. Anything but 'popup' clears the popup so the click reaches the service worker. */
   browserAction: BrowserAction
   /** What clicking a stored tab in the list page does. */
@@ -27,13 +25,11 @@ export interface Options {
   ignorePinned: boolean
   /** Pin lists created from a tab group. */
   pinGroupList: boolean
-  /** Show context menu items on pages. */
+  /** Show context menu items on pages (and on links, images, and selections). */
   pageContext: boolean
-  /** Show context menu on all elements (links, images, ...) not just the page. */
-  allContext: boolean
   /** How long deleted lists stay recoverable in History (locally). */
   trashRetention: 'immediately' | 'day' | 'week' | 'month'
-  /** Skip about:/chrome:/file: etc. URLs when storing. */
+  /** Skip about:/chrome: etc. URLs when storing (file: pages are kept — they can be reopened). */
   excludeIllegalURL: boolean
   /** Deduplicate tabs by URL within each list when saving. */
   removeDuplicate: boolean
@@ -51,7 +47,6 @@ export const DEFAULT_OPTIONS: Options = {
   locale: 'auto',
   theme: 'auto',
   density: 'compact',
-  pinnedPosition: 'top',
   browserAction: 'popup',
   itemClickAction: 'open-and-remove',
   openListAction: 'open',
@@ -63,7 +58,6 @@ export const DEFAULT_OPTIONS: Options = {
   ignorePinned: false,
   pinGroupList: false,
   pageContext: true,
-  allContext: false,
   trashRetention: 'month',
   excludeIllegalURL: true,
   removeDuplicate: false,

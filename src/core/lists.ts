@@ -1,6 +1,8 @@
 import type { Snapshot, TabItem, TabList, Tombstone } from './types'
 
-export const ILLEGAL_URLS = ['about:', 'chrome:', 'chrome-extension:', 'brave:', 'edge:', 'file:', 'view-source:', 'wss:', 'ws:']
+// file: is deliberately absent — local files can be reopened once the user allows
+// file-URL access (see core/file-urls.ts), so they're worth keeping.
+export const ILLEGAL_URLS = ['about:', 'chrome:', 'chrome-extension:', 'brave:', 'edge:', 'view-source:', 'wss:', 'ws:']
 
 export const isStorableUrl = (url: string) => ILLEGAL_URLS.every(prefix => !url.startsWith(prefix))
 

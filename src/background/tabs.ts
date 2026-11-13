@@ -1,8 +1,9 @@
 import { GROUP_TO_LIST_COLOR, placeTabsInGroup, splitByGroup } from '../core/grouping'
+import { splitOpenable } from '../core/file-urls'
 import { isStorableUrl, normalizeTab } from '../core/lists'
 import { getLists, getOptions } from '../core/storage'
 import type { TabGroupInfo, TabItem, TabList } from '../core/types'
-import { appendTabsToGroupList, appendTabsToList, removeList } from './mutations'
+import { appendTabsToGroupList, appendTabsToList, removeList, updateList } from './mutations'
 
 const APP_URL = chrome.runtime.getURL('app.html')
 
@@ -201,27 +202,42 @@ export const restoreTabs = async (tabs: TabItem[], windowId?: number) => {
     indexOffset = (existing.at(-1)?.index ?? -1) + 1
   }
   const created: { id: number; windowId?: number; group?: TabGroupInfo }[] = []
-  for (let i = 0; i < tabs.length; i += 1) {
-    const tab = tabs[i]
-    const createdTab = await chrome.tabs.create({
-      url: tab.url,
-      pinned: tab.pinned,
-      index: i + indexOffset,
-      windowId,
-    })
-    if (tab.muted) await chrome.tabs.update(createdTab.id!, { muted: true })
-    created.push({ id: createdTab.id!, windowId: createdTab.windowId, group: tab.group })
+  for (const tab of tabs) {
+    // one unopenable URL mustn't abort the rest of the restore
+    try {
+      const createdTab = await chrome.tabs.create({
+        url: tab.url,
+        pinned: tab.pinned,
+        index: created.length + indexOffset,
+        windowId,
+      })
+      if (tab.muted) await chrome.tabs.update(createdTab.id!, { muted: true })
+      created.push({ id: createdTab.id!, windowId: createdTab.windowId, group: tab.group })
+    } catch {
+      /* skip it; the others still open */
+    }
   }
   await regroupTabs(created)
 }
 
-export const restoreList = async (list: TabList, { windowId, newWindow }: { windowId?: number; newWindow?: boolean } = {}) => {
+/**
+ * Opens a list's tabs. file:// tabs are held back when the user hasn't allowed
+ * file-URL access (Chrome would reject them, and in a new window one bad URL
+ * fails the whole window); they come back as `blocked` so callers can keep them
+ * in the list and tell the user how to enable it.
+ */
+export const restoreList = async (
+  list: TabList,
+  { windowId, newWindow }: { windowId?: number; newWindow?: boolean } = {},
+): Promise<{ blocked: TabItem[] }> => {
+  const { openable, blocked } = await splitOpenable(list.tabs)
+  if (openable.length === 0) return { blocked }
   // explicit request wins; otherwise the restorePosition option decides
   const openInNewWindow = newWindow ?? (await getOptions()).restorePosition === 'new-window'
   if (openInNewWindow) {
-    const created = await chrome.windows.create({ url: list.tabs.map(t => t.url) })
+    const created = await chrome.windows.create({ url: openable.map(t => t.url) })
     const createdTabs: { id: number; windowId?: number; group?: TabGroupInfo }[] = []
-    list.tabs.forEach((tab, index) => {
+    openable.forEach((tab, index) => {
       const target = created.tabs?.[index]
       if (!target) return
       if (tab.muted) chrome.tabs.update(target.id!, { muted: true })
@@ -229,15 +245,19 @@ export const restoreList = async (list: TabList, { windowId, newWindow }: { wind
       createdTabs.push({ id: target.id!, windowId: created.id, group: tab.group })
     })
     await regroupTabs(createdTabs)
-    return
+    return { blocked }
   }
-  await restoreTabs(list.tabs, windowId)
+  await restoreTabs(openable, windowId)
+  return { blocked }
 }
 
 export const restoreLatestList = async () => {
   const lists = await getLists()
   const latest = lists.find(l => !l.pinned) ?? lists[0]
   if (!latest) return
-  await restoreList(latest)
-  if (!latest.pinned) await removeList(latest._id)
+  const { blocked } = await restoreList(latest)
+  if (latest.pinned) return
+  // keep any file:// tabs that couldn't open rather than deleting them with the list
+  if (blocked.length) await updateList(latest._id, { tabs: blocked })
+  else await removeList(latest._id)
 }

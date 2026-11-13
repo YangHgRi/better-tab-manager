@@ -35,12 +35,10 @@ export const rebuildMenus = async () => {
   await chrome.contextMenus.removeAll()
   const opts = await getOptions()
   const contexts: chrome.contextMenus.ContextType[] = ['action']
-  if (opts.pageContext) {
-    contexts.push('page')
-    if (opts.allContext) contexts.push('all')
-  }
+  // when the page menu is on, always include links/images/selections too
+  if (opts.pageContext) contexts.push('page', 'all')
 
-  await create({ id: 'SHOW_TAB_LIST', title: 'Open Even Better OneTab', contexts })
+  await create({ id: 'SHOW_TAB_LIST', title: 'Open Better Tab Manager', contexts })
   await create({ id: 'STORE_SELECTED', title: 'Store selected tabs', contexts })
   await create({ id: 'STORE_GROUP', title: "Store this tab's group", contexts })
   await create({ id: 'STORE', title: 'Store tabs…', contexts })

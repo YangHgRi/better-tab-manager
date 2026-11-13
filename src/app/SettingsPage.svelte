@@ -41,11 +41,6 @@
       labelKey: 'settings.toolbar.pageContext.label',
       descKey: 'settings.toolbar.pageContext.desc',
     },
-    {
-      key: 'allContext',
-      labelKey: 'settings.toolbar.allContext.label',
-      descKey: 'settings.toolbar.allContext.desc',
-    },
   ]
 </script>
 
@@ -88,20 +83,6 @@
         <select class="select" aria-label={t('settings.appearance.density.label')} value={app.opts.density} onchange={e => update('density', e.currentTarget.value as Options['density'])}>
           <option value="compact">{t('settings.appearance.density.compact')}</option>
           <option value="comfortable">{t('settings.appearance.density.comfortable')}</option>
-        </select>
-      </div>
-      <div class="row">
-        <div class="text">
-          <div class="label">{t('settings.appearance.pinnedPosition.label')}</div>
-        </div>
-        <select
-          class="select"
-          aria-label={t('settings.appearance.pinnedPosition.label')}
-          value={app.opts.pinnedPosition}
-          onchange={e => update('pinnedPosition', e.currentTarget.value as Options['pinnedPosition'])}
-        >
-          <option value="top">{t('settings.appearance.pinnedPosition.top')}</option>
-          <option value="bottom">{t('settings.appearance.pinnedPosition.bottom')}</option>
         </select>
       </div>
       <div class="row">
@@ -169,6 +150,43 @@
   <section>
     <h2>{t('settings.storing.heading')}</h2>
     <div class="card">
+      <div class="row">
+        <div class="text">
+          <div class="label">{t('settings.toolbar.browserAction.label')}</div>
+          <div class="desc">
+            {#if app.opts.browserAction !== 'popup'}
+              {t('settings.toolbar.browserAction.descNonPopup')}
+            {:else}
+              {t('settings.toolbar.browserAction.descPopup')}
+            {/if}
+          </div>
+        </div>
+        <select
+          class="select"
+          aria-label={t('settings.toolbar.browserAction.label')}
+          value={app.opts.browserAction}
+          onchange={e => update('browserAction', e.currentTarget.value as Options['browserAction'])}
+        >
+          <option value="popup">{t('settings.toolbar.browserAction.popup')}</option>
+          <option value="store-selected">{t('settings.toolbar.browserAction.storeSelected')}</option>
+          <option value="store-all">{t('settings.toolbar.browserAction.storeAll')}</option>
+          <option value="show-list">{t('settings.toolbar.browserAction.showList')}</option>
+        </select>
+      </div>
+      {#each menuToggles as toggle (toggle.key)}
+        <label class="row">
+          <div class="text">
+            <div class="label">{t(toggle.labelKey)}</div>
+            {#if toggle.descKey}<div class="desc">{t(toggle.descKey)}</div>{/if}
+          </div>
+          <input
+            type="checkbox"
+            class="switch"
+            checked={app.opts[toggle.key] as boolean}
+            onchange={e => update(toggle.key, e.currentTarget.checked as never)}
+          />
+        </label>
+      {/each}
       <div class="row">
         <div class="text">
           <div class="label">{t('settings.storing.openListPage.label')}</div>
@@ -282,50 +300,6 @@
     </div>
   </section>
 
-  <section>
-    <h2>{t('settings.toolbar.heading')}</h2>
-    <div class="card">
-      <div class="row">
-        <div class="text">
-          <div class="label">{t('settings.toolbar.browserAction.label')}</div>
-          <div class="desc">
-            {#if app.opts.browserAction !== 'popup'}
-              {t('settings.toolbar.browserAction.descNonPopup')}
-            {:else}
-              {t('settings.toolbar.browserAction.descPopup')}
-            {/if}
-          </div>
-        </div>
-        <select
-          class="select"
-          aria-label={t('settings.toolbar.browserAction.label')}
-          value={app.opts.browserAction}
-          onchange={e => update('browserAction', e.currentTarget.value as Options['browserAction'])}
-        >
-          <option value="popup">{t('settings.toolbar.browserAction.popup')}</option>
-          <option value="store-selected">{t('settings.toolbar.browserAction.storeSelected')}</option>
-          <option value="store-all">{t('settings.toolbar.browserAction.storeAll')}</option>
-          <option value="show-list">{t('settings.toolbar.browserAction.showList')}</option>
-        </select>
-      </div>
-      {#each menuToggles as toggle (toggle.key)}
-        <label class="row">
-          <div class="text">
-            <div class="label">{t(toggle.labelKey)}</div>
-            {#if toggle.descKey}<div class="desc">{t(toggle.descKey)}</div>{/if}
-          </div>
-          <input
-            type="checkbox"
-            class="switch"
-            checked={app.opts[toggle.key] as boolean}
-            disabled={toggle.key === 'allContext' && !app.opts.pageContext}
-            onchange={e => update(toggle.key, e.currentTarget.checked as never)}
-          />
-        </label>
-      {/each}
-    </div>
-  </section>
-
   <ShortcutsSection />
   <SyncSection />
   <ImportExport />
@@ -339,7 +313,7 @@
   <p class="version">
     {t('settings.footer.version', { version })}
     <span class="sep">·</span>
-    <a href="https://bphirsh.github.io/even-better-onetab/privacy/" target="_blank" rel="noreferrer">{t('settings.footer.privacy')}</a>
+    <a href="https://bphirsh.github.io/better-tab-manager/privacy/" target="_blank" rel="noreferrer">{t('settings.footer.privacy')}</a>
   </p>
 </div>
 

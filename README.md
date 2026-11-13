@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="docs/wordmark.png" alt="Even Better OneTab" width="440" />
+  <img src="docs/wordmark.png" alt="Better Tab Manager" width="440" />
 </p>
 
 <p align="center">
   <a href="https://github.com/sponsors/bphirsh"><img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?logo=github" alt="Sponsor" /></a>
 </p>
 
-Store and restore your browser tabs in one click — a cleaner, faster OneTab alternative for
+Store and restore your browser tabs in one click — a cleaner, faster tab manager for
 Chrome and Brave. If it's useful to you, consider
 [sponsoring the project](https://github.com/sponsors/bphirsh) ☕.
 
@@ -67,7 +67,7 @@ the `dist/` folder.
 ## Sync setup
 
 1. Open the extension's **Settings → Sync & mobile**.
-2. [Create a GitHub token](https://github.com/settings/tokens/new?scopes=gist&description=Better+OneTab+Sync)
+2. [Create a GitHub token](https://github.com/settings/tokens/new?scopes=gist&description=Better+Tab+Manager+Sync)
    with only the `gist` scope.
 3. Paste it in and hit **Connect** — a private gist is created and your lists upload to it
    automatically from then on.
@@ -75,7 +75,7 @@ the `dist/` folder.
 ## Mobile viewer
 
 A read-only, phone-friendly view of your synced lists, hosted at
-**<https://bphirsh.github.io/even-better-onetab/viewer/>** (GitHub Pages, straight from this
+**<https://bphirsh.github.io/better-tab-manager/viewer/>** (GitHub Pages, straight from this
 repo). Open it on your phone and enter the same token + gist id once — they're stored only in
 that browser's local storage.
 

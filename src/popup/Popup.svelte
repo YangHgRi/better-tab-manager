@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { openFileAccessSettings } from '../core/file-urls'
   import { send } from '../core/messages'
   import { t } from '../i18n/i18n.svelte'
   import Icon from '../ui/Icon.svelte'
   import { app, applyTheme, initState } from '../ui/state.svelte'
-  import { timeAgo } from '../ui/time'
 
   initState()
 
@@ -18,8 +18,20 @@
     window.close()
   }
 
+  // file:// tabs held back for lack of file-URL access; the popup stays open to explain
+  let blockedFiles = $state(0)
+
   const restore = async (id: string) => {
-    await send({ type: 'restore-list', id })
+    const result = await send<{ blockedFiles?: number }>({ type: 'restore-list', id })
+    if (result?.blockedFiles) {
+      blockedFiles = result.blockedFiles
+      return
+    }
+    window.close()
+  }
+
+  const fixFileAccess = async () => {
+    await openFileAccessSettings()
     window.close()
   }
 
@@ -28,8 +40,30 @@
     window.close()
   }
 
-  const listLabel = (title: string, count: number) =>
-    title || t('popup.tabCount', { n: count })
+  const hostOf = (url: string) => {
+    try {
+      return new URL(url).hostname.replace(/^www\./, '')
+    } catch {
+      return url
+    }
+  }
+
+  /**
+   * What to show as a recent list's main label. Titled lists show their title;
+   * untitled ones (the common "save selected" case) preview the actual sites
+   * instead of a bare "N tabs" — the single-tab title, or the deduped hosts.
+   */
+  const listLabel = (list: (typeof recent)[number]) => {
+    if (list.title) return list.title
+    const tabs = list.tabs
+    if (tabs.length === 0) return t('popup.tabCount', { n: 0 })
+    if (tabs.length === 1) return tabs[0].title?.trim() || hostOf(tabs[0].url)
+    return [...new Set(tabs.map(x => hostOf(x.url)))].join(', ')
+  }
+
+  /** Full tab list for the hover tooltip. */
+  const listTooltip = (list: (typeof recent)[number]) =>
+    list.tabs.map(tb => tb.title?.trim() || tb.url).join('\n')
 </script>
 
 <main>
@@ -44,17 +78,21 @@
     </button>
   </div>
 
+  {#if blockedFiles}
+    <div class="notice">
+      <span>{t('files.blocked', { n: blockedFiles })}</span>
+      <button class="notice-btn" onclick={fixFileAccess}>{t('files.openSettings')}</button>
+    </div>
+  {/if}
+
   {#if recent.length > 0}
     <div class="section-label">{t('popup.recentLists')}</div>
     <div class="recent">
       {#each recent as list (list._id)}
-        <button class="recent-item" title={t('popup.restoreList')} onclick={() => restore(list._id)}>
-          <span class="recent-title">{listLabel(list.title, list.tabs.length)}</span>
-          {#if list.title}
-            <span class="recent-count">{list.tabs.length}</span>
-          {/if}
+        <button class="recent-item" title={listTooltip(list)} onclick={() => restore(list._id)}>
+          <span class="recent-title">{listLabel(list)}</span>
           <span class="slot">
-            <span class="recent-time">{timeAgo(list.time)}</span>
+            <span class="recent-count">{t('popup.tabCount', { n: list.tabs.length })}</span>
             <span class="restore-icon"><Icon name="restore" size={14} /></span>
           </span>
         </button>
@@ -139,11 +177,11 @@
     white-space: nowrap;
   }
 
-  .recent-count,
-  .recent-time {
+  .recent-count {
     flex-shrink: 0;
     font-size: 12px;
     color: var(--text-3);
+    white-space: nowrap;
   }
 
   /* time and restore icon share one grid cell so swapping them on hover can't shift layout */
@@ -168,8 +206,31 @@
     visibility: visible;
   }
 
-  .recent-item:hover .recent-time {
+  .recent-item:hover .recent-count {
     visibility: hidden;
+  }
+
+  .notice {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 2px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-soft);
+    color: var(--text);
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+
+  .notice-btn {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
   }
 
   .empty {

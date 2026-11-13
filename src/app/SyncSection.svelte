@@ -10,8 +10,33 @@
   let tokenDraft = $state('')
   let gistIdDraft = $state('')
   let busy = $state(false)
+  let gistOpen = $state(false)
 
   const connected = $derived(Boolean(app.syncConfig.gistId && app.syncConfig.gistToken))
+  const deviceOn = $derived(app.syncConfig.deviceSync)
+  const mirrorOn = $derived(app.syncConfig.bookmarkMirror)
+
+  const toggleDevice = async (e: Event & { currentTarget: HTMLInputElement }) => {
+    const on = e.currentTarget.checked
+    await act({ type: 'device-sync-set', enabled: on }, on ? t('sync.device.enabledToast') : t('sync.device.disabledToast'))
+  }
+
+  const toggleMirror = async (e: Event & { currentTarget: HTMLInputElement }) => {
+    const el = e.currentTarget
+    const on = el.checked
+    if (on) {
+      // must be requested from this click gesture, so it's the first thing we do
+      const granted = await chrome.permissions.request({ permissions: ['bookmarks'] })
+      if (!granted) {
+        el.checked = false
+        toast(t('sync.mirror.denied'), 'error')
+        return
+      }
+      await act({ type: 'mirror-set', enabled: true }, t('sync.mirror.enabledToast'))
+    } else {
+      await act({ type: 'mirror-set', enabled: false }, t('sync.mirror.disabledToast'))
+    }
+  }
 
   const connect = async () => {
     const token = tokenDraft.trim()
@@ -44,7 +69,7 @@
 
   const disconnect = () => {
     if (!confirm(t('sync.disconnectConfirm'))) return
-    setSyncConfig({ enabled: false, gistToken: '', gistId: '' })
+    setSyncConfig({ ...app.syncConfig, enabled: false, gistToken: '', gistId: '' })
   }
 
   const copy = async (label: string, value: string) => {
@@ -55,7 +80,35 @@
 
 <section>
   <h2>{t('sync.heading')}</h2>
+
   <div class="card">
+    <label class="row">
+      <div class="text">
+        <div class="label">{t('sync.device.label')}</div>
+        <div class="desc">{t('sync.device.desc')}</div>
+        {#if deviceOn}
+          <div class="desc note">{t('sync.device.privacy')}</div>
+        {/if}
+      </div>
+      <input type="checkbox" class="switch" checked={deviceOn} onchange={toggleDevice} />
+    </label>
+
+    <label class="row">
+      <div class="text">
+        <div class="label">{t('sync.mirror.label')}</div>
+        <div class="desc">{t('sync.mirror.desc')}</div>
+      </div>
+      <input type="checkbox" class="switch" checked={mirrorOn} onchange={toggleMirror} />
+    </label>
+  </div>
+
+  <div class="card">
+    <button class="disclosure" class:open={gistOpen} onclick={() => (gistOpen = !gistOpen)} aria-expanded={gistOpen}>
+      <Icon name="chevron" size={16} />
+      <span>{t('sync.gist.disclosure')}</span>
+      {#if connected}<span class="badge-on">●</span>{/if}
+    </button>
+    {#if gistOpen}
     {#if !connected}
       <p class="intro">
         {t('sync.introBefore')}<strong>{t('sync.introGist')}</strong>{t('sync.introAfter')}
@@ -63,7 +116,7 @@
       <ol class="steps">
         <li>
           <a
-            href="https://github.com/settings/tokens/new?scopes=gist&description=Better+OneTab+Sync"
+            href="https://github.com/settings/tokens/new?scopes=gist&description=Better+Tab+Manager+Sync"
             target="_blank"
             rel="noreferrer">{t('sync.step1Link')}</a
           >
@@ -134,7 +187,7 @@
         <div class="text">
           <div class="label">{t('sync.mobileLabel')}</div>
           <div class="desc">
-            {t('sync.mobileDescBefore')}<a href="https://bphirsh.github.io/even-better-onetab/viewer/" target="_blank" rel="noreferrer">{t('sync.mobileDescLink')}</a>{t('sync.mobileDescAfter')}
+            {t('sync.mobileDescBefore')}<a href="https://bphirsh.github.io/better-tab-manager/viewer/" target="_blank" rel="noreferrer">{t('sync.mobileDescLink')}</a>{t('sync.mobileDescAfter')}
           </div>
         </div>
         <div class="btn-group">
@@ -154,6 +207,7 @@
         </div>
         <button class="btn danger" onclick={disconnect}>{t('sync.disconnect')}</button>
       </div>
+    {/if}
     {/if}
   </div>
 </section>
@@ -178,6 +232,44 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 4px 16px;
+  }
+
+  .card + .card {
+    margin-top: 12px;
+  }
+
+  .desc.note {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    color: var(--text-3);
+  }
+
+  .disclosure {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 0;
+    font-weight: 500;
+    color: var(--text-2);
+    text-align: left;
+  }
+
+  .disclosure :global(svg) {
+    transition: transform 0.15s ease;
+    transform: rotate(-90deg);
+    color: var(--text-3);
+  }
+
+  .disclosure.open :global(svg) {
+    transform: rotate(0deg);
+  }
+
+  .badge-on {
+    color: var(--accent);
+    font-size: 10px;
+    margin-left: -2px;
   }
 
   .intro {
