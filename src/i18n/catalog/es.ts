@@ -225,7 +225,7 @@ export const es: Catalog = {
   'settings.toolbar.browserAction.showList': 'Abre la página de listas',
   'settings.toolbar.pageContext.label': 'Mostrar en el menú del clic derecho de la página',
   'settings.toolbar.pageContext.desc':
-    'Añade un submenú “Better Tab Manager” al hacer clic derecho en una página web. Desactivado, las acciones solo aparecen al hacer clic derecho en el icono de la barra de herramientas.',
+    'Añade un submenú “Better Tab Manager” al hacer clic derecho en una página web. Desactivado, las acciones siguen disponibles al hacer clic derecho en el icono de la barra de herramientas o en una pestaña.',
 
   'settings.footer.madeWith': 'Hecho con ❤️ en NYC',
   'settings.footer.coffee': '☕ Invítame a un café',
