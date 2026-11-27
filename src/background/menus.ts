@@ -61,10 +61,10 @@ const createMenuTree = async (
 }
 
 // Older browsers reject the tab context either synchronously or in the callback.
-const createTabRoot = (contexts: chrome.contextMenus.ContextType[]) =>
+const createTabRoot = (contexts: chrome.contextMenus.ContextType[], visible: boolean) =>
   new Promise<boolean>(resolve => {
     try {
-      chrome.contextMenus.create({ id: 'TAB', title: 'Better Tab Manager', contexts }, () => {
+      chrome.contextMenus.create({ id: 'TAB', title: 'Better Tab Manager', contexts, visible }, () => {
         const error = chrome.runtime.lastError
         if (error) console.warn('Tab context menu unavailable:', error.message)
         resolve(!error)
@@ -85,7 +85,12 @@ export const rebuildMenus = async () => {
   await createMenuTree(contexts, titledLists, '')
   // Chrome 150 adds "tab"; the project's pinned Chrome types predate it.
   const tabContexts = ['tab' as unknown as chrome.contextMenus.ContextType]
-  if (await createTabRoot(tabContexts)) await createMenuTree(tabContexts, titledLists, 'TAB.', 'TAB')
+  const tabContextSupported = await createTabRoot(tabContexts, opts.tabContext)
+  if (tabContextSupported) {
+    if (opts.tabContext) await createMenuTree(tabContexts, titledLists, 'TAB.', 'TAB')
+    else await chrome.contextMenus.remove('TAB')
+  }
+  await chrome.storage.session.set({ tabContextSupported })
 }
 
 export const handleMenuClick = (info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) => {
